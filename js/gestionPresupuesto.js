@@ -30,6 +30,10 @@ function CrearGasto(descripcion, valor) {
         descripcion: descripcion,
         valor: (typeof valor === "number" && valor >= 0) ? valor : 0,
 
+        // Métodos del objeto gasto
+        mostrarGasto() {
+            return `Gasto correspondiente a ${gasto.descripcion} con valor ${gasto.valor} €`;
+        }
     };
     return gasto;
 
