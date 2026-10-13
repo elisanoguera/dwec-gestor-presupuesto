@@ -7,6 +7,14 @@ let presupuesto = 0;
 
 function actualizarPresupuesto(valor) {
     // TODO
+    let resultado = -1;
+    if (typeof valor === "number" && valor >= 0) {
+        presupuesto = valor;
+        resultado = presupuesto;
+    } else {
+        console.log("Error: el presupuesto debe ser un número no negativo");
+    }
+    return resultado;
 
 }
 
