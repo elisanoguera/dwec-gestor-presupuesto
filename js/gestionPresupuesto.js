@@ -33,6 +33,10 @@ function CrearGasto(descripcion, valor) {
         // Métodos del objeto gasto
         mostrarGasto() {
             return `Gasto correspondiente a ${gasto.descripcion} con valor ${gasto.valor} €`;
+        },
+
+        actualizarDescripcion(nuevaDescripcion) {
+            gasto.descripcion = nuevaDescripcion;
         }
     };
     return gasto;
