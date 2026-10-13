@@ -37,6 +37,12 @@ function CrearGasto(descripcion, valor) {
 
         actualizarDescripcion(nuevaDescripcion) {
             gasto.descripcion = nuevaDescripcion;
+        },
+
+        actualizarValor(nuevoValor) {
+            if (typeof nuevoValor === "number" && nuevoValor >= 0) {
+                gasto.valor = nuevoValor;
+            }
         }
     };
     return gasto;
