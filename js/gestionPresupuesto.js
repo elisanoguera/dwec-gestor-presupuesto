@@ -25,7 +25,13 @@ function mostrarPresupuesto() {
 
 function CrearGasto(descripcion, valor) {
     // TODO
+     let gasto = {
+        // Propiedades del objeto gasto
+        descripcion: descripcion,
+        valor: (typeof valor === "number" && valor >= 0) ? valor : 0,
 
+    };
+    return gasto;
 
 }
 
