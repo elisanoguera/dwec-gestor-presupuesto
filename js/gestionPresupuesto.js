@@ -1,18 +1,24 @@
 // TODO: Crear las funciones, objetos y variables indicadas en el enunciado
 
+let presupuesto = 0;
+
 // TODO: Variable global
 
 
-function actualizarPresupuesto() {
+function actualizarPresupuesto(valor) {
     // TODO
+
 }
 
 function mostrarPresupuesto() {
     // TODO
+
 }
 
-function CrearGasto() {
+function CrearGasto(descripcion, valor) {
     // TODO
+
+
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
