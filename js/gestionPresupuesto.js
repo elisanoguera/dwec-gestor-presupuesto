@@ -71,6 +71,10 @@ function CrearGasto(descripcion, valor) {
         }
     };
 
+    this.borrarEtiquetas = function(...etiquetasABorrar) {
+        this.etiquetas = this.etiquetas.filter(etiqueta => !etiquetasABorrar.includes(etiqueta));
+    };
+
 
     this.actualizarDescripcion = function(nuevaDescripcion) {
         this.descripcion = nuevaDescripcion;
@@ -81,6 +85,9 @@ function CrearGasto(descripcion, valor) {
             this.valor = nuevoValor;
         }
     };
+
+    // Las etiquetas iniciales se añaden con anyadirEtiquetas
+    this.anyadirEtiquetas(...etiquetas);
 }
 
 function listarGastos() {
