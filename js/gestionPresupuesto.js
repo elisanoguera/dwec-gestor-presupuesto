@@ -5,7 +5,7 @@
 let presupuesto = 0;
 
 function actualizarPresupuesto(valor) {
-    if (typeof valor === "number" && valor >= 0) {
+    if (valor >= 0) {
         presupuesto = valor;
         return valor;
     } else {
@@ -19,24 +19,29 @@ function mostrarPresupuesto() {
 
 
 function CrearGasto(descripcion, valor) {
-      if (typeof valor !== "number" || valor < 0) {
-        valor = 0;
-    }
+
+    //propiedades
     this.descripcion = descripcion;
-    this.valor = valor;
-    
+
+    if (valor >= 0) {
+        this.valor = valor;
+    } else {
+        this.valor = 0;
+    }
+    //metodos
     this.mostrarGasto = function() {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     };
-    
+
     this.actualizarDescripcion = function(nuevaDescripcion) {
         this.descripcion = nuevaDescripcion;
     };
+
     this.actualizarValor = function(nuevoValor) {
-       if (typeof nuevoValor === "number" && nuevoValor >= 0) {
+        if (nuevoValor >= 0) {
             this.valor = nuevoValor;
+        }
     };
-}
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
