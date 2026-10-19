@@ -27,31 +27,27 @@ function mostrarPresupuesto() {
 
 function CrearGasto(descripcion, valor) {
     // TODO
-    
+
     idGasto++;
-     let gasto = {
-        // Propiedades del objeto gasto
-        id: idGasto,
-        descripcion: descripcion,
-        valor: (typeof valor === "number" && valor >= 0) ? valor : 0,
 
-        // Métodos del objeto gasto
-        mostrarGasto() {
-            return `Gasto correspondiente a ${gasto.descripcion} con valor ${gasto.valor} €`;
-        },
+    // Propiedades del objeto gasto
+    this.descripcion = descripcion;
+    this.valor = (typeof valor === "number" && valor >= 0) ? valor : 0;
 
-        actualizarDescripcion(nuevaDescripcion) {
-            gasto.descripcion = nuevaDescripcion;
-        },
+    // Métodos del objeto gasto
+    this.mostrarGasto = function() {
+        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    };
 
-        actualizarValor(nuevoValor) {
-            if (typeof nuevoValor === "number" && nuevoValor >= 0) {
-                gasto.valor = nuevoValor;
-            }
+    this.actualizarDescripcion = function(nuevaDescripcion) {
+        this.descripcion = nuevaDescripcion;
+    };
+
+    this.actualizarValor = function(nuevoValor) {
+        if (typeof nuevoValor === "number" && nuevoValor >= 0) {
+            this.valor = nuevoValor;
         }
     };
-    return gasto;
-
 }
 
 function listarGastos() {
