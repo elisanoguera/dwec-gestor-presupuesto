@@ -34,10 +34,28 @@ function CrearGasto(descripcion, valor) {
     this.descripcion = descripcion;
     this.valor = (typeof valor === "number" && valor >= 0) ? valor : 0;
 
+    // Fecha en formato timestamp: si no se indica o no es válida, la fecha actual
+    let fechaParseada = Date.parse(fecha);
+    this.fecha = isNaN(fechaParseada) ? Date.now() : fechaParseada;
+
+    // Si no se indican etiquetas, array vacío
+    this.etiquetas = [];
+
     // Métodos del objeto gasto
     this.mostrarGasto = function() {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
     };
+
+    this.mostrarGastoCompleto = function() {
+        let texto = `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €.\n`;
+        texto += `Fecha: ${new Date(this.fecha).toLocaleString()}\n`;
+        texto += `Etiquetas:\n`;
+        for (let etiqueta of this.etiquetas) {
+            texto += `- ${etiqueta}\n`;
+        }
+        return texto;
+    };
+
 
     this.actualizarDescripcion = function(nuevaDescripcion) {
         this.descripcion = nuevaDescripcion;
