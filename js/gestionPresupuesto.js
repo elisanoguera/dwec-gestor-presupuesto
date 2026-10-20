@@ -25,10 +25,8 @@ function mostrarPresupuesto() {
      return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-function CrearGasto(descripcion, valor) {
+function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     // TODO
-
-    idGasto++;
 
     // Propiedades del objeto gasto
     this.descripcion = descripcion;
