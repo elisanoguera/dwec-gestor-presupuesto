@@ -94,13 +94,17 @@ function listarGastos() {
     return gastos;
 }
 
-function anyadirGasto() {
-    gastos.id = idGasto;
+function anyadirGasto(gasto) {
+    gasto.id = idGasto;
     idGasto++;
     gastos.push(gasto);
 }
 
-function borrarGasto() {
+function borrarGasto(id) {
+    let posicion = gastos.findIndex(gasto => gasto.id === id);
+    if (posicion !== -1) {
+        gastos.splice(posicion, 1);
+    }
 }
 
 function calcularTotalGastos() {
