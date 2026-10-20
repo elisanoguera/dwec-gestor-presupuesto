@@ -95,6 +95,9 @@ function listarGastos() {
 }
 
 function anyadirGasto() {
+    gastos.id = idGasto;
+    idGasto++;
+    gastos.push(gasto);
 }
 
 function borrarGasto() {
