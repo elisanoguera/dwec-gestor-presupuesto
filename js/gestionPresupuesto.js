@@ -24,16 +24,47 @@ function mostrarPresupuesto() {
     return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-
-function CrearGasto(descripcion, valor) {
+//función constructora hace uso del operador this y para crear objetos basados en ella utiliza el operador new.
+function CrearGasto(descripcion, valor,fecha, ...etiquetas) {
 
     //propiedades
+    
     this.descripcion = descripcion;
+}
+    //comprobar el valor del gasto, si es un número y mayor o igual a 0, se asigna a la propiedad valor, de lo contrario se asigna 0.
     if (typeof valor === 'number' && valor >= 0) {
         this.valor = valor;
     } else {
         this.valor = 0;
     }
+
+      //para la fecha comprobamos si se ha proporcionado un valor válido, si no se proporciona o es inválido, se asigna la fecha actual.
+    if (!fecha) {
+    this.fecha = Date.now();
+    } else {
+    let timestamp = Date.parse(fecha);
+
+    if (!isNaN(timestamp)) {
+        this.fecha = timestamp; //la fecha se almacenará en formato timestamp.
+    } else {
+        this.fecha = Date.now();
+    }
+    //
+    //utilizar el operador rest para permitir que se pasen múltiples etiquetas como argumentos. Luego, las almacenamos en un array llamado etiquetas.
+    this.etiquetas = [];
+
+    this.anyadirEtiquetas = function (...nuevasEtiquetas) {
+        this.etiquetas.push(...nuevasEtiquetas); // se utiliza el operador spread para agregar las nuevas etiquetas al array existente de etiquetas.
+    };
+
+    this.anyadirEtiquetas(...etiquetas);
+
+    // Métodos
+    this.mostrarGasto = function () {
+        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    }
+
+    
     //metodos
     this.mostrarGasto = function() {
         return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
@@ -50,6 +81,7 @@ function CrearGasto(descripcion, valor) {
     };
 }
     function listarGastos() {
+        return gastos;
        
     }   
 
