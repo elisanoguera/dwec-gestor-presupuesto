@@ -2,13 +2,19 @@
 
 // TODO: Variable global
 
+let presupuesto = 0;
 
-function actualizarPresupuesto() {
-    // TODO
+function actualizarPresupuesto(NuevoValor) {
+    if (Number.isFinite(NuevoValor) && NuevoValor >= 0) {
+        presupuesto = NuevoValor;
+        return presupuesto;
+    } else {
+        return -1;
+    }
 }
 
 function mostrarPresupuesto() {
-    // TODO
+    return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
 function CrearGasto() {
