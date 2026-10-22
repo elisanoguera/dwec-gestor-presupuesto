@@ -5,12 +5,11 @@
 let presupuesto = 0;
 
 function actualizarPresupuesto(nuevoValor) {
-    if (esNumeroNoNegativo(nuevoValor)) {
-        presupuesto = nuevoValor;
-        return presupuesto;
-    } else {
+    if (!esNumeroNoNegativo(nuevoValor)) {
         return -1;
     }
+    presupuesto = nuevoValor;
+    return presupuesto;
 }
 
 function mostrarPresupuesto() {
@@ -38,11 +37,7 @@ function esNumeroNoNegativo(numero) {
 }
 
 function obtenerValorInicial(numero) {
-    if (esNumeroNoNegativo(numero)) {
-        return numero;
-    } else {
-        return 0;
-    }
+    return esNumeroNoNegativo(numero) ? numero : 0;
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
