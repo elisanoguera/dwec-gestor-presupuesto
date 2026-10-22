@@ -4,9 +4,9 @@
 
 let presupuesto = 0;
 
-function actualizarPresupuesto(NuevoValor) {
-    if (Number.isFinite(NuevoValor) && NuevoValor >= 0) {
-        presupuesto = NuevoValor;
+function actualizarPresupuesto(nuevoValor) {
+    if (esNumeroNoNegativo(nuevoValor)) {
+        presupuesto = nuevoValor;
         return presupuesto;
     } else {
         return -1;
@@ -17,8 +17,32 @@ function mostrarPresupuesto() {
     return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-function CrearGasto() {
-    // TODO
+function CrearGasto(descripcion, valor) {
+    this.descripcion = descripcion;
+    this.valor = obtenerValorInicial(valor);
+    this.mostrarGasto = function() {
+        return `Gasto correspondiente a ${descripcion} con valor ${valor} €`;
+    };
+    this.actualizarDescripcion = function(nuevaDescripcion) {
+        this.descripcion = nuevaDescripcion;
+    };
+    this.actualizarValor = function(nuevoValor) {
+        if (esNumeroNoNegativo(nuevoValor)) {
+            this.valor = nuevoValor;
+        }
+    };
+}
+
+function esNumeroNoNegativo(numero) {
+    return Number.isFinite(numero) && numero >= 0;
+}
+
+function obtenerValorInicial(numero) {
+    if (esNumeroNoNegativo(numero)) {
+        return numero;
+    } else {
+        return 0;
+    }
 }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
