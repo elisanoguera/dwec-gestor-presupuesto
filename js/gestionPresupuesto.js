@@ -89,6 +89,11 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
 
     // Obtener  el perioro de agrupacion de gastos (día, semana, mes, año) a partir de la fecha del gasto
     this.obtenerPeriodoAgrupacion = function(periodo) {
+        
+        // Convierte el timestamp en un Date, toISOString()
+        //"2021-09-06T00:00:00.000Z"
+        //0123456789
+
         let fechaISO = new Date(this.fecha).toISOString();
         let resultado = "";
         if (periodo === "dia") {
@@ -100,6 +105,7 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
         }
         return resultado;
     };
+
 
 }
 
@@ -132,8 +138,37 @@ function calcularBalance() {
     return presupuesto - calcularTotalGastos();
 }
 
-function filtrarGastos() {
+// Si un filtro no viene, no se comprueba. Por eso filtrarGastos({}) devuelve todos los gastos.
+function filtrarGastos(filtros = {}) {
+    return gastos.filter(function(gasto) {
+        let cumple = true;
 
+        if (filtros.fechaDesde !== undefined && gasto.fecha < Date.parse(filtros.fechaDesde)) {
+            cumple = false;
+        }
+        if (filtros.fechaHasta !== undefined && gasto.fecha > Date.parse(filtros.fechaHasta)) {
+            cumple = false;
+        }
+        if (filtros.valorMinimo !== undefined && gasto.valor < filtros.valorMinimo) {
+            cumple = false;
+        }
+        if (filtros.valorMaximo !== undefined && gasto.valor > filtros.valorMaximo) {
+            cumple = false;
+        }
+        if (filtros.descripcionContiene !== undefined &&
+            !gasto.descripcion.toLowerCase().includes(filtros.descripcionContiene.toLowerCase())) {
+            cumple = false;
+        }
+        if (filtros.etiquetasTiene !== undefined && filtros.etiquetasTiene.length > 0) {
+            let etiquetasGasto = gasto.etiquetas.map(etiqueta => etiqueta.toLowerCase());
+            let tieneAlguna = filtros.etiquetasTiene.some(etiqueta => etiquetasGasto.includes(etiqueta.toLowerCase()));
+            if (!tieneAlguna) {
+                cumple = false;
+            }
+        }
+
+        return cumple;
+    });
 }
 
 function agruparGastos() {
