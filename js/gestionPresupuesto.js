@@ -171,9 +171,22 @@ function filtrarGastos(filtros = {}) {
     });
 }
 
-function agruparGastos() {
+// Agrupa los gastos por el periodo indicado (día, semana, mes, año) y devuelve un objeto con la suma de los valores de los gastos de cada periodo
+function agruparGastos(periodo = "mes", etiquetas = [], fechaDesde, fechaHasta = new Date().toISOString()) {
+    let gastosFiltrados = filtrarGastos({
+        fechaDesde: fechaDesde,
+        fechaHasta: fechaHasta,
+        etiquetasTiene: etiquetas
+    });
 
+    // Agrupa los gastos por el periodo indicado y devuelve un objeto con la suma de los valores de los gastos de cada periodo
+    return gastosFiltrados.reduce(function(acc, gasto) {
+        let periodoAgrupacion = gasto.obtenerPeriodoAgrupacion(periodo);
+        acc[periodoAgrupacion] = (acc[periodoAgrupacion] || 0) + gasto.valor;
+        return acc;
+    }, {});
 }
+
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
