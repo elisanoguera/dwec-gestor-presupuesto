@@ -86,6 +86,21 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
 
     // Las etiquetas iniciales se añaden con anyadirEtiquetas
     this.anyadirEtiquetas(...etiquetas);
+
+    // Obtener  el perioro de agrupacion de gastos (día, semana, mes, año) a partir de la fecha del gasto
+    this.obtenerPeriodoAgrupacion = function(periodo) {
+        let fechaISO = new Date(this.fecha).toISOString();
+        let resultado = "";
+        if (periodo === "dia") {
+            resultado = fechaISO.substring(0, 10);
+        } else if (periodo === "mes") {
+            resultado = fechaISO.substring(0, 7);
+        } else if (periodo === "anyo") {
+            resultado = fechaISO.substring(0, 4);
+        }
+        return resultado;
+    };
+
 }
 
 function listarGastos() {
