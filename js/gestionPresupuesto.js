@@ -28,29 +28,69 @@ function mostrarPresupuesto() {
 function CrearGasto(descripcion, valor,fecha, ...etiquetas) {
 
     //propiedades
-    
+
+    //descripción
     this.descripcion = descripcion;
-}
+    //valor
+    this.valor = valor;
     //comprobar el valor del gasto, si es un número y mayor o igual a 0, se asigna a la propiedad valor, de lo contrario se asigna 0.
-    if (typeof valor === 'number' && valor >= 0) {
+   if (typeof valor === 'number' && valor >= 0) {
         this.valor = valor;
     } else {
         this.valor = 0;
     }
+ //mostrar gasto completo, se utiliza el método toLocaleString() para formatear la fecha en un formato legible.
+    this.mostrarGastoCompleto = function() {
+    let resultado =
+        `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €.\n` +
+        `Fecha: ${new Date(this.fecha).toLocaleString()}\n` +
+        `Etiquetas:`;
 
+    for (let etiqueta of this.etiquetas) {
+        resultado += `\n  ${etiqueta}`;
+    }
 
-      //para la fecha comprobamos si se ha proporcionado un valor válido, si no se proporciona o es inválido, se asigna la fecha actual.
-    if (!fecha) {
-    this.fecha = Date.now();
-    } else {
-    let timestamp = Date.parse(fecha);
+    return resultado;
+    };
+    //Actualizar fecha
+    this.actualizarFecha = function (nuevaFecha) {
+    let timestamp = Date.parse(nuevaFecha);
 
     if (!isNaN(timestamp)) {
-        this.fecha = timestamp; //la fecha se almacenará en formato timestamp.
-    } else {
-        this.fecha = Date.now();
+        this.fecha = timestamp;
     }
-    
+};
+    // Añadir etiquetas
+    this.anyadirEtiquetas = function (...nuevasEtiquetas) {
+
+    for (let etiqueta of nuevasEtiquetas) {
+
+        if (!this.etiquetas.includes(etiqueta)) {
+            this.etiquetas.push(etiqueta);
+        }
+
+    }
+};
+    // Borrar etiquetas
+    this.borrarEtiquetas = function (...etiquetasABorrar) {
+
+    this.etiquetas = this.etiquetas.filter(
+        etiqueta => !etiquetasABorrar.includes(etiqueta)
+    );
+
+};
+    // para la fecha comprobamos si se ha proporcionado un valor válido, si no se proporciona o es inválido, se asigna la fecha actual.
+    if (!fecha) {
+        this.fecha = Date.now();
+    } else {
+        let timestamp = Date.parse(fecha);
+
+        if (!isNaN(timestamp)) {
+            this.fecha = timestamp;
+        } else {
+            this.fecha = Date.now();
+        }
+    }
     //utilizar el operador rest para permitir que se pasen múltiples etiquetas como argumentos. Luego, las almacenamos en un array llamado etiquetas.
     this.etiquetas = [];
 
@@ -79,18 +119,33 @@ function CrearGasto(descripcion, valor,fecha, ...etiquetas) {
        
     }   
 
-    function anyadirGasto() {
-      
+    function anyadirGasto(gasto) {
+      gasto.id = idGasto;
+      idGasto++;
+      gastos.push(gasto);
     }
 
-    function borrarGasto() {
+    function borrarGasto(id) {
+
+    let indice = gastos.findIndex(gasto => gasto.id === id);
+
+    if (indice !== -1) {
+        gastos.splice(indice, 1);
     }
+}
 
     function calcularTotalGastos() {
+        let total = 0;
+    for (let ga of gastos) {
+        total += ga.valor;
+    }
+    return total;
        
     }   
 
     function calcularBalance() {
+        
+        return presupuesto - calcularTotalGastos();
        
     }   
 
