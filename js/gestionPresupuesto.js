@@ -143,6 +143,8 @@ function filtrarGastos(filtros = {}) {
     return gastos.filter(function(gasto) {
         let cumple = true;
 
+        // Comprobamos cada filtro. Si no se cumple, ponemos cumple a false
+        // creamos un objeto con los filtros que se han pasado y comprobamos si el gasto cumple con ellos
         if (filtros.fechaDesde !== undefined && gasto.fecha < Date.parse(filtros.fechaDesde)) {
             cumple = false;
         }
