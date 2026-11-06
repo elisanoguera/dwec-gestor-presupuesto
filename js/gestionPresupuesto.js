@@ -60,6 +60,17 @@ CrearGasto.prototype.borrarEtiquetas = function(...etiquetasBorrar){
         !etiquetasBorrar.includes(etiquetaParaBorrar));  
 };
 
+CrearGasto.prototype.obtenerPeriodoAgrupacion = function(periodo) {
+    let fecha = new Date(this.fecha);
+
+    if (periodo === 'dia')
+        return fecha.toISOString().slice(0, 10);
+    if (periodo === 'mes')
+        return fecha.toISOString().slice(0, 7);
+    if (periodo === 'anyo')
+        return fecha.toISOString().slice(0, 4);
+}
+
 function esNumeroNoNegativo(numero) {
     return Number.isFinite(numero) && numero >= 0;
 }
@@ -106,6 +117,62 @@ function calcularBalance() {
     return presupuesto - calcularTotalGastos();
 }
 
+function filtrarGastos(filtro) {
+    
+    let gastosFiltrados = gastos.filter(function(gasto) {
+        let pasaFiltro = true;
+
+        if (filtro.hasOwnProperty('fechaDesde')) {
+                if (gasto.fecha < Date.parse(filtro.fechaDesde))
+                    pasaFiltro = false;
+        }
+        
+        if (filtro.hasOwnProperty('fechaHasta')) {
+            if (gasto.fecha > Date.parse(filtro.fechaHasta))
+                pasaFiltro = false;
+        }
+
+        if ((filtro.hasOwnProperty('valorMinimo') && gasto.valor < filtro.valorMinimo) ||
+            (filtro.hasOwnProperty('valorMaximo') && gasto.valor > filtro.valorMaximo))
+                pasaFiltro = false;
+        
+        if (filtro.hasOwnProperty('descripcionContiene')) {
+            if (!gasto.descripcion.toUpperCase().includes(filtro.descripcionContiene.toUpperCase()))
+                pasaFiltro = false;
+        }
+
+        //Contiene alguna de las etiquetas
+        if (filtro.hasOwnProperty('etiquetasTiene')) {
+            let etiquetasFiltro = filtro.etiquetasTiene.map(etiqueta => 
+                etiqueta.toUpperCase());
+            let etiquetasGasto = gasto.etiquetas.map(etiqueta => 
+                etiqueta.toUpperCase());
+
+            let tieneEtiqueta = false;
+
+            for (let etiqueta of etiquetasFiltro) {
+                if (etiquetasGasto.includes(etiqueta)){
+                    tieneEtiqueta = true;
+                    break;
+                }
+            };
+
+            if (!tieneEtiqueta)
+                pasaFiltro = false;
+        }
+
+        return pasaFiltro;
+    });
+
+    return gastosFiltrados;
+}
+
+function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta) {
+    let agrupacion = {};
+
+    return argupacion;
+}
+
 export   {
     mostrarPresupuesto,
     actualizarPresupuesto,
@@ -114,5 +181,7 @@ export   {
     anyadirGasto,
     borrarGasto,
     calcularTotalGastos,
-    calcularBalance
+    calcularBalance,
+    filtrarGastos,
+    agruparGastos
 }
