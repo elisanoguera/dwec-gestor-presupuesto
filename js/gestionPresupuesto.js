@@ -156,7 +156,72 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
 
         return presupuesto - calcularTotalGastos();
     }
+    function filtrarGastos(filtros) {
 
+    return gastos.filter(function(gasto) {
+
+        if (filtros.fechaDesde) {
+            if (gasto.fecha < Date.parse(filtros.fechaDesde)) {
+                return false;
+            }
+        }
+
+        if (filtros.fechaHasta) {
+            if (gasto.fecha > Date.parse(filtros.fechaHasta)) {
+                return false;
+            }
+        }
+
+        if (filtros.valorMinimo) {
+            if (gasto.valor < filtros.valorMinimo) {
+                return false;
+            }
+        }
+
+        if (filtros.valorMaximo) {
+            if (gasto.valor > filtros.valorMaximo) {
+                return false;
+            }
+        }
+
+        if (filtros.descripcionContiene) {
+
+            if (
+                !gasto.descripcion
+                    .toLowerCase()
+                    .includes(filtros.descripcionContiene.toLowerCase())
+            ) {
+                return false;
+            }
+        }
+
+        if (filtros.etiquetasTiene) {
+
+            let encontrada = false;
+
+            for (let etiqueta of gasto.etiquetas) {
+
+                for (let etiquetaFiltro of filtros.etiquetasTiene) {
+
+                    if (
+                        etiqueta.toLowerCase() ===
+                        etiquetaFiltro.toLowerCase()
+                    ) {
+                        encontrada = true;
+                    }
+                }
+            }
+
+            if (!encontrada) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+}
+    function agruparGastos() {
+    }
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
@@ -169,5 +234,8 @@ export   {
     borrarGasto,
     calcularTotalGastos,
     calcularBalance,
+    filtrarGastos,
+    agruparGastos,
     CrearGasto
+
 }
