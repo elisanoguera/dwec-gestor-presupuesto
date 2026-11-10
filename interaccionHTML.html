@@ -9,9 +9,22 @@
   </head>
 
   <body>
+    <script type="module" src="js/gestionPresupuestoWeb.js"></script>
     <script type="module" src="js/generarDatosEstaticos.js"></script> <!-- Ubicar el js de los import -->
     <div id="aplicacion">
-      <h2>Totales</h2>
+
+      <div id="controlesprincipales">
+        <button id="actualizarpresupuesto" type="button">
+        Actualizar presupuesto
+        </button>
+
+        <button id="anyadirgasto" type="button">
+        Añadir gasto
+        </button>
+      </div>
+
+    <h2>Totales</h2>
+
       <div id="presupuesto"></div>
 
       <div id="gastos-totales"></div>
