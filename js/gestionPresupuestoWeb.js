@@ -83,6 +83,16 @@ function repintar() {
     }
 }
 
+function actualizarPresupuestoWeb() {
+    let presupuesto = Number(prompt("Introduce un nuevo presupuesto:"));
+    gestionPresupuesto.actualizarPresupuesto(presupuesto);
+    repintar();
+}
+
+let botonActualizarPresupuesto = document.getElementById("actualizarpresupuesto");
+botonActualizarPresupuesto.addEventListener("click", actualizarPresupuestoWeb);
+
+
 
 
 export {
