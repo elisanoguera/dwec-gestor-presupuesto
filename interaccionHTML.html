@@ -4,12 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>
-      <!-- TODO --> Gestor de Presupuesto - Pon aquí tu nombre y apellidos
+      <!-- TODO --> Gestor de Presupuesto - Joel Israel Quiroga Miranda
     </title>
+    <link rel="stylesheet" href="css/estilos.css" />
   </head>
 
   <body>
     <div id="aplicacion">
+      <div id="controlesprincipales">
+        <button type="button" id="actualizarpresupuesto">
+          Actualizar presupuesto
+        </button>
+        <button type="button" id="anyadirgasto">
+          Añadir gasto
+        </button>
+      </div>
+      
       <h2>Totales</h2>
       <div id="presupuesto"></div>
 
@@ -42,12 +52,9 @@
       <div id="agrupacion-anyo"></div>
     </div>
 
-    <!--
-             TODO: Cargar el script js/generarDatosEstaticos.js
 
-             Cargar script al final para que se haya cargado todo el HTML previo.
-             El script se debe cargar con el atributo type="module" porque vamos a utilizar "import"
-             https://es.javascript.info/modules-intro#que-es-un-modulo
-        -->
+
+    <script type="module" src="js/generarDatosEstaticos.js"></script>
+
   </body>
 </html>

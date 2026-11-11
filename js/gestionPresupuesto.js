@@ -1,19 +1,194 @@
 // TODO: Crear las funciones, objetos y variables indicadas en el enunciado
 
+let presupuesto = 0;
+let gastos = [];
+let idGasto = 0;
+
 // TODO: Variable global
 
 
-function actualizarPresupuesto() {
+function actualizarPresupuesto(valor) {
     // TODO
+    let resultado = -1;
+    if (typeof valor === "number" && valor >= 0) {
+        presupuesto = valor;
+        resultado = presupuesto;
+    } else {
+        console.log("Error: el presupuesto debe ser un número no negativo");
+    }
+    return resultado;
+
 }
 
 function mostrarPresupuesto() {
     // TODO
+     return `Tu presupuesto actual es de ${presupuesto} €`;
 }
 
-function CrearGasto() {
+function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     // TODO
+
+    // Propiedades del objeto gasto
+    this.descripcion = descripcion;
+    this.valor = (typeof valor === "number" && valor >= 0) ? valor : 0;
+
+    // Fecha en formato timestamp: si no se indica o no es válida, la fecha actual
+    let fechaParseada = Date.parse(fecha);
+    this.fecha = isNaN(fechaParseada) ? Date.now() : fechaParseada;
+
+    // Si no se indican etiquetas, array vacío
+    this.etiquetas = [];
+
+    // Métodos del objeto gasto
+    this.mostrarGasto = function() {
+        return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    };
+
+    this.mostrarGastoCompleto = function() {
+        let texto = `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €.\n`;
+        texto += `Fecha: ${new Date(this.fecha).toLocaleString()}\n`;
+        texto += `Etiquetas:\n`;
+        for (let etiqueta of this.etiquetas) {
+            texto += `- ${etiqueta}\n`;
+        }
+        return texto;
+    };
+
+    this.actualizarFecha = function(nuevaFecha) {
+        let fechaParseada = Date.parse(nuevaFecha);
+        if (!isNaN(fechaParseada)) {
+            this.fecha = fechaParseada;
+        }
+    };
+
+    this.anyadirEtiquetas = function(...nuevasEtiquetas) {
+        for (let etiqueta of nuevasEtiquetas) {
+            if (!this.etiquetas.includes(etiqueta)) {
+                this.etiquetas.push(etiqueta);
+            }
+        }
+    };
+
+    this.borrarEtiquetas = function(...etiquetasABorrar) {
+        this.etiquetas = this.etiquetas.filter(etiqueta => !etiquetasABorrar.includes(etiqueta));
+    };
+
+
+    this.actualizarDescripcion = function(nuevaDescripcion) {
+        this.descripcion = nuevaDescripcion;
+    };
+
+    this.actualizarValor = function(nuevoValor) {
+        if (typeof nuevoValor === "number" && nuevoValor >= 0) {
+            this.valor = nuevoValor;
+        }
+    };
+
+    // Las etiquetas iniciales se añaden con anyadirEtiquetas
+    this.anyadirEtiquetas(...etiquetas);
+
+    // Obtener  el perioro de agrupacion de gastos (día, semana, mes, año) a partir de la fecha del gasto
+    this.obtenerPeriodoAgrupacion = function(periodo) {
+        
+        // Convierte el timestamp en un Date, toISOString()
+        //"2021-09-06T00:00:00.000Z"
+        //0123456789
+
+        let fechaISO = new Date(this.fecha).toISOString();
+        let resultado = "";
+        if (periodo === "dia") {
+            resultado = fechaISO.substring(0, 10);
+        } else if (periodo === "mes") {
+            resultado = fechaISO.substring(0, 7);
+        } else if (periodo === "anyo") {
+            resultado = fechaISO.substring(0, 4);
+        }
+        return resultado;
+    };
+
+
 }
+
+function listarGastos() {
+    return gastos;
+}
+
+function anyadirGasto(gasto) {
+    gasto.id = idGasto;
+    idGasto++;
+    gastos.push(gasto);
+}
+
+function borrarGasto(id) {
+    let posicion = gastos.findIndex(gasto => gasto.id === id);
+    if (posicion !== -1) {
+        gastos.splice(posicion, 1);
+    }
+}
+
+function calcularTotalGastos() {
+    let total = 0;
+    for (let gasto of gastos) {
+        total += gasto.valor;
+    }
+    return total;
+}
+
+function calcularBalance() {
+    return presupuesto - calcularTotalGastos();
+}
+
+// Si un filtro no viene, no se comprueba. Por eso filtrarGastos({}) devuelve todos los gastos.
+function filtrarGastos(filtros = {}) {
+    return gastos.filter(function(gasto) {
+        let cumple = true;
+
+        // Comprobamos cada filtro. Si no se cumple, ponemos cumple a false
+        // creamos un objeto con los filtros que se han pasado y comprobamos si el gasto cumple con ellos
+        if (filtros.fechaDesde !== undefined && gasto.fecha < Date.parse(filtros.fechaDesde)) {
+            cumple = false;
+        }
+        if (filtros.fechaHasta !== undefined && gasto.fecha > Date.parse(filtros.fechaHasta)) {
+            cumple = false;
+        }
+        if (filtros.valorMinimo !== undefined && gasto.valor < filtros.valorMinimo) {
+            cumple = false;
+        }
+        if (filtros.valorMaximo !== undefined && gasto.valor > filtros.valorMaximo) {
+            cumple = false;
+        }
+        if (filtros.descripcionContiene !== undefined &&
+            !gasto.descripcion.toLowerCase().includes(filtros.descripcionContiene.toLowerCase())) {
+            cumple = false;
+        }
+        if (filtros.etiquetasTiene !== undefined && filtros.etiquetasTiene.length > 0) {
+            let etiquetasGasto = gasto.etiquetas.map(etiqueta => etiqueta.toLowerCase());
+            let tieneAlguna = filtros.etiquetasTiene.some(etiqueta => etiquetasGasto.includes(etiqueta.toLowerCase()));
+            if (!tieneAlguna) {
+                cumple = false;
+            }
+        }
+
+        return cumple;
+    });
+}
+
+// Agrupa los gastos por el periodo indicado (día, semana, mes, año) y devuelve un objeto con la suma de los valores de los gastos de cada periodo
+function agruparGastos(periodo = "mes", etiquetas = [], fechaDesde, fechaHasta = new Date().toISOString()) {
+    let gastosFiltrados = filtrarGastos({
+        fechaDesde: fechaDesde,
+        fechaHasta: fechaHasta,
+        etiquetasTiene: etiquetas
+    });
+
+    // Agrupa los gastos por el periodo indicado y devuelve un objeto con la suma de los valores de los gastos de cada periodo
+    return gastosFiltrados.reduce(function(acc, gasto) {
+        let periodoAgrupacion = gasto.obtenerPeriodoAgrupacion(periodo);
+        acc[periodoAgrupacion] = (acc[periodoAgrupacion] || 0) + gasto.valor;
+        return acc;
+    }, {});
+}
+
 
 // NO MODIFICAR A PARTIR DE AQUÍ: exportación de funciones y objetos creados para poder ejecutar los tests.
 // Las funciones y objetos deben tener los nombres que se indican en el enunciado
@@ -21,5 +196,12 @@ function CrearGasto() {
 export   {
     mostrarPresupuesto,
     actualizarPresupuesto,
-    CrearGasto
+    CrearGasto,
+    listarGastos,
+    anyadirGasto,
+    borrarGasto,
+    calcularTotalGastos,
+    calcularBalance,
+    filtrarGastos,
+    agruparGastos
 }
