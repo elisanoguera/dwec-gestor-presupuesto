@@ -6,10 +6,20 @@
     <title>
       <!-- TODO --> Gestor de Presupuesto - Joel Israel Quiroga Miranda
     </title>
+    <link rel="stylesheet" href="css/estilos.css" />
   </head>
 
   <body>
     <div id="aplicacion">
+      <div id="controlesprincipales">
+        <button type="button" id="actualizarpresupuesto">
+          Actualizar presupuesto
+        </button>
+        <button type="button" id="anyadirgasto">
+          Añadir gasto
+        </button>
+      </div>
+      
       <h2>Totales</h2>
       <div id="presupuesto"></div>
 
@@ -41,6 +51,8 @@
       <h2>Gastos agrupados por año</h2>
       <div id="agrupacion-anyo"></div>
     </div>
+
+
 
     <script type="module" src="js/generarDatosEstaticos.js"></script>
 
