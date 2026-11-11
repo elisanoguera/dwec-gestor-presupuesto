@@ -30,10 +30,37 @@ function mostrarGastoWeb(idElemento, gasto) {
         let spanEtiqueta = document.createElement("span");
         spanEtiqueta.className = "gasto-etiquetas-etiqueta";
         spanEtiqueta.textContent = etiqueta;
+
+        // Manejador para borrar la etiqueta al hacer clic
+        let manejadorBorrarEtiqueta = new BorrarEtiquetasHandle();
+        manejadorBorrarEtiqueta.gasto = gasto;
+        manejadorBorrarEtiqueta.etiqueta = etiqueta;
+        spanEtiqueta.addEventListener("click", manejadorBorrarEtiqueta);
+
         divEtiquetas.append(spanEtiqueta);
     }
 
-    divGasto.append(divDescripcion, divFecha, divValor, divEtiquetas);
+    // Botón Editar
+    let botonEditar = document.createElement("button");
+    botonEditar.type = "button";
+    botonEditar.className = "gasto-editar";
+    botonEditar.textContent = "Editar";
+
+    let manejadorEditar = new EditarHandle();
+    manejadorEditar.gasto = gasto;
+    botonEditar.addEventListener("click", manejadorEditar);
+
+    // Botón Borrar
+    let botonBorrar = document.createElement("button");
+    botonBorrar.type = "button";
+    botonBorrar.className = "gasto-borrar";
+    botonBorrar.textContent = "Borrar";
+
+    let manejadorBorrar = new BorrarHandle();
+    manejadorBorrar.gasto = gasto;
+    botonBorrar.addEventListener("click", manejadorBorrar);
+
+    divGasto.append(divDescripcion, divFecha, divValor, divEtiquetas, botonEditar, botonBorrar);
     contenedor.append(divGasto);
 }
 
