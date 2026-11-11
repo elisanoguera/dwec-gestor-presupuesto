@@ -128,6 +128,13 @@ function EditarHandle() {
     };
 }
 
+function BorrarHandle() {
+    this.handleEvent = function(event) {
+        gestionPresupuesto.borrarGasto(this.gasto.id);
+        repintar();
+    };
+}
+
 
 
 export {
