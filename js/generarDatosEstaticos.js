@@ -22,3 +22,19 @@ gestionPre.anyadirGasto(gasto4);
 gestionPre.anyadirGasto(gasto5);
 gestionPre.anyadirGasto(gasto6);
 
+gPrespuestoWeb.mostrarDatoEnId(
+    "gastos-totales",
+    gestionPre.calcularTotalGastos()
+);
+
+gPrespuestoWeb.mostrarDatoEnId(
+    "balance-total",
+    gestionPre.calcularBalance()
+);
+
+gPrespuestoWeb.listarGastos().forEach(gasto => {
+    gPrespuestoWeb.mostrarGastoWeb(
+        "listado-gastos-completo",
+        gasto
+    );
+});
