@@ -84,3 +84,20 @@ gPrespuestoWeb.filtrarGastos({
     );
 
 });
+gPrespuestoWeb.mostrarGastosAgrupadosWeb(
+    "agrupacion-dia",
+    gestionPre.agruparGastos("dia"),
+    "dia"
+);
+
+gPrespuestoWeb.mostrarGastosAgrupadosWeb(
+    "agrupacion-mes",
+    gestionPre.agruparGastos("mes"),
+    "mes"
+);
+
+gPrespuestoWeb.mostrarGastosAgrupadosWeb(
+    "agrupacion-anyo",
+    gestionPre.agruparGastos("anyo"),
+    "anyo"
+);
