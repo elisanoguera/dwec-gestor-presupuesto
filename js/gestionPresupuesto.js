@@ -144,21 +144,13 @@ function filtrarGastos(filtro) {
                 pasaFiltro = false;
         }
 
-        //Contiene alguna de las etiquetas
+        //Contiene alguna de las etiquetas 
         if (filtro.hasOwnProperty('etiquetasTiene')) {
-            let etiquetasFiltro = filtro.etiquetasTiene.map(etiqueta => 
-                etiqueta.toUpperCase());
-            let etiquetasGasto = gasto.etiquetas.map(etiqueta => 
-                etiqueta.toUpperCase());
-
-            let tieneEtiqueta = false;
-
-            for (let etiqueta of etiquetasFiltro) {
-                if (etiquetasGasto.includes(etiqueta)){
-                    tieneEtiqueta = true;
-                    break;
-                }
-            };
+            const tieneEtiqueta = filtro.etiquetasTiene.some(etiquetaFiltro =>
+                gasto.etiquetas.some(etiquetaGasto =>
+                etiquetaGasto.toUpperCase() === etiquetaFiltro.toUpperCase()
+            )   
+        );
 
             if (!tieneEtiqueta)
                 pasaFiltro = false;
