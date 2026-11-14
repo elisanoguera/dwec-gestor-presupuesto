@@ -144,3 +144,26 @@ function repintar() {
     gasto => mostrarGastoWeb("listado-gastos-completo", gasto)
   );
 }
+//actualizar presupuesto 
+function actualizarPresupuestoWeb() {
+
+  let presupuesto = prompt(
+    "Introduce presupuesto"
+  );
+
+  presupuesto = Number(presupuesto);
+
+  gestionP.actualizarPresupuesto(presupuesto);
+
+  repintar();
+}
+
+let botonActualizarPresupuesto =
+    document.getElementById(
+        "actualizarpresupuesto"
+    );
+
+botonActualizarPresupuesto.addEventListener(
+    "click",
+    actualizarPresupuestoWeb
+);
