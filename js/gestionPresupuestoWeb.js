@@ -206,3 +206,49 @@ document
       "click",
       nuevoGastoWeb
   );
+
+  //funcion handler para editar gasto
+  function EditarHandle() {}
+
+    EditarHandle.prototype.handleEvent = function () {
+
+    let descripcion = prompt(
+        "Descripción",
+        this.gasto.descripcion
+    );
+
+    let valor = prompt(
+        "Valor",
+        this.gasto.valor
+    );
+
+    let fecha = prompt(
+        "Fecha",
+        this.gasto.fecha
+    );
+
+    let etiquetas = prompt(
+        "Etiquetas",
+        this.gasto.etiquetas.join(",")
+    );
+
+    valor = Number(valor);
+
+    etiquetas = etiquetas.split(",");
+
+    this.gasto.actualizarValor(valor);
+
+    this.gasto.actualizarDescripcion(
+        descripcion
+    );
+
+    this.gasto.actualizarFecha(
+        fecha
+    );
+
+    this.gasto.anyadirEtiquetas(
+        ...etiquetas
+    );
+
+    repintar();
+};
