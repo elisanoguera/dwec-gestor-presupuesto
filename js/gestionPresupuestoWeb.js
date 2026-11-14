@@ -1,3 +1,7 @@
+//import 
+import * as gestionP from "./gestionPresupuesto.js";
+
+
 // Función para mostrar un dato en un elemento del DOM con un id específico
 function mostrarDatoEnId(idElemento , valor) {
     document.getElementById(idElemento).textContent = valor;
@@ -113,3 +117,30 @@ export {
     mostrarGastoWeb,
     mostrarGastosAgrupadosWeb
 };
+
+//FUNCION REPINTAR 
+function repintar() {
+
+  mostrarDatoEnId(
+    "presupuesto",
+    gestionP.mostrarPresupuesto()
+  );
+
+  mostrarDatoEnId(
+    "gastos-totales",
+    gestionP.calcularTotalGastos()
+  );
+
+  mostrarDatoEnId(
+    "balance-total",
+    gestionP.calcularBalance()
+  );
+
+  document.getElementById(
+    "listado-gastos-completo"
+  ).innerHTML = "";
+
+  gestionP.listarGastos().forEach(
+    gasto => mostrarGastoWeb("listado-gastos-completo", gasto)
+  );
+}
