@@ -157,7 +157,7 @@ function actualizarPresupuestoWeb() {
 
   repintar();
 }
-
+// evento del boton actualizar presupuesto
 let botonActualizarPresupuesto =
     document.getElementById(
         "actualizarpresupuesto"
@@ -167,3 +167,42 @@ botonActualizarPresupuesto.addEventListener(
     "click",
     actualizarPresupuestoWeb
 );
+
+//funcion añadir gasto
+function nuevoGastoWeb() {
+
+  let descripcion = prompt("Descripción");
+
+  let valor = Number(
+    prompt("Valor")
+  );
+
+  let fecha = prompt(
+    "Fecha (yyyy-mm-dd)"
+  );
+
+  let etiquetasTexto = prompt(
+    "Etiquetas separadas por comas"
+  );
+
+  let etiquetas = etiquetasTexto.split(",");
+
+  let gasto = new gestionP.CrearGasto(
+    descripcion,
+    valor,
+    fecha,
+    ...etiquetas
+  );
+
+  gestionP.anyadirGasto(gasto);
+
+  repintar();
+}
+
+//evento del boton añadir gasto
+document
+  .getElementById("anyadirgasto")
+  .addEventListener(
+      "click",
+      nuevoGastoWeb
+  );
