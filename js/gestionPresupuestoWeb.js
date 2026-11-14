@@ -207,8 +207,8 @@ document
       nuevoGastoWeb
   );
 
-  //funcion handler para editar gasto
-  function EditarHandle() {}
+  //funcion constructora handler para editar gasto
+function EditarHandle() {}
 
     EditarHandle.prototype.handleEvent = function () {
 
@@ -251,4 +251,15 @@ document
     );
 
     repintar();
+};
+//constructora borrar handle
+function BorrarHandle() {}
+
+    BorrarHandle.prototype.handleEvent = function () {
+
+        gestionP.borrarGasto(
+        this.gasto.id
+    );
+
+  repintar();
 };
