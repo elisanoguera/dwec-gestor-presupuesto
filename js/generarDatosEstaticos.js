@@ -38,3 +38,49 @@ gPrespuestoWeb.listarGastos().forEach(gasto => {
         gasto
     );
 });
+
+gestionPre.filtrarGastos({
+    fechaDesde: "2021-09-01",
+    fechaHasta: "2021-09-30"
+}).forEach(gasto => {
+
+    gPrespuestoWeb.mostrarGastoWeb(
+        "listado-gastos-filtrado-1",
+        gasto
+    );
+
+});
+
+gestionPre.filtrarGastos({
+    valorMinimo: 50
+}).forEach(gasto => {
+
+    gPrespuestoWeb.mostrarGastoWeb(
+        "listado-gastos-filtrado-2",
+        gasto
+    );
+
+});
+gestionPre.filtrarGastos({
+    valorMinimo: 200,
+    etiquetasTiene: ["seguros"]
+}).forEach(gasto => {
+
+    gPrespuestoWeb.mostrarGastoWeb(
+        "listado-gastos-filtrado-3",
+        gasto
+    );
+
+});
+
+gPrespuestoWeb.filtrarGastos({
+    valorMaximo: 50,
+    etiquetasTiene: ["comida","transporte"]
+}).forEach(gasto => {
+
+    gPrespuestoWeb.mostrarGastoWeb(
+        "listado-gastos-filtrado-4",
+        gasto
+    );
+
+});
