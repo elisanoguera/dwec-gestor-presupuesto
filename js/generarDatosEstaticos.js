@@ -31,8 +31,7 @@ gPrespuestoWeb.mostrarDatoEnId(
     "balance-total",
     gestionPre.calcularBalance()
 );
-
-gPrespuestoWeb.listarGastos().forEach(gasto => {
+gestionPre.listarGastos().forEach(gasto => {
     gPrespuestoWeb.mostrarGastoWeb(
         "listado-gastos-completo",
         gasto
@@ -73,7 +72,7 @@ gestionPre.filtrarGastos({
 
 });
 
-gPrespuestoWeb.filtrarGastos({
+gestionPre.filtrarGastos({
     valorMaximo: 50,
     etiquetasTiene: ["comida","transporte"]
 }).forEach(gasto => {
