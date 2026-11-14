@@ -18,7 +18,7 @@ function mostrarPresupuesto() {
 function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     this.descripcion = descripcion;
     this.valor = obtenerValorInicial(valor);
-    this.fecha = validarFecha(fecha) ? Date.parse(fecha) : Date.now();
+    this.fecha = esFechaValida(fecha) ? Date.parse(fecha) : Date.now();
     this.etiquetas = [...etiquetas];
 }
 
@@ -44,7 +44,7 @@ CrearGasto.prototype.actualizarValor = function(valor) {
 };
 
 CrearGasto.prototype.actualizarFecha = function (fecha) {
-    if (validarFecha(fecha))
+    if (esFechaValida(fecha))
         this.fecha = Date.parse(fecha);
 };
 
@@ -63,10 +63,13 @@ CrearGasto.prototype.borrarEtiquetas = function(...etiquetasBorrar){
 CrearGasto.prototype.obtenerPeriodoAgrupacion = function(periodo) {
     let fecha = new Date(this.fecha);
 
+    //Devuelve una cifra tipo 2026-11-06
     if (periodo === 'dia')
         return fecha.toISOString().slice(0, 10);
+    //Devuelve una cifra tipo 2026-11
     if (periodo === 'mes')
         return fecha.toISOString().slice(0, 7);
+    //Devuelve una cifra tipo 2026
     if (periodo === 'anyo')
         return fecha.toISOString().slice(0, 4);
 }
@@ -79,7 +82,7 @@ function obtenerValorInicial(numero) {
     return esNumeroNoNegativo(numero) ? numero : 0;
 }
 
-function validarFecha(fecha) {
+function esFechaValida(fecha) {
         return Number.isFinite(Date.parse(fecha));
     };
 
@@ -168,9 +171,29 @@ function filtrarGastos(filtro) {
 }
 
 function agruparGastos(periodo, etiquetas, fechaDesde, fechaHasta) {
-    let agrupacion = {};
+    let filtro = {};
 
-    return argupacion;
+    if (esFechaValida(fechaDesde))
+        filtro.fechaDesde = fechaDesde;
+    if (esFechaValida(fechaHasta))
+        filtro.fechaHasta = fechaHasta;
+    if (etiquetas != undefined && etiquetas.length > 0)
+        filtro.etiquetasTiene = etiquetas;
+
+    let gastosParaAgrupar = filtrarGastos(filtro);
+
+    let agrupacion = gastosParaAgrupar.reduce((acumulador, gasto) => {
+        let periodoAgrupacion = gasto.obtenerPeriodoAgrupacion(periodo);
+
+        if (acumulador[periodoAgrupacion] === undefined)
+            acumulador[periodoAgrupacion] = gasto.valor;
+        else
+            acumulador[periodoAgrupacion] += gasto.valor;
+
+        return acumulador;
+    }, {});
+
+    return (agrupacion);
 }
 
 export   {
