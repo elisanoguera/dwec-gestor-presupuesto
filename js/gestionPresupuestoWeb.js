@@ -224,7 +224,7 @@ function BorrarEtiquetasHandle(){
 }
 
 function nuevoGastoWebFormulario(){
-    let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);;
+    let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
     var formulario = plantillaFormulario.querySelector("form");
     let botonAnyadirGastoFormulario = document.getElementById("anyadirgasto-formulario");   
 
@@ -233,7 +233,7 @@ function nuevoGastoWebFormulario(){
 
         let form = event.currentTarget;
         let descripcion = form.elements.descripcion.value;
-        let valor = form.elements.valor.value;
+        let valor = Number(form.elements.valor.value);
         let fecha = form.elements.fecha.value;
         let etiquetas = form.elements.etiquetas.value;
         let arrayEtiquetas = etiquetas.split(",");
@@ -248,7 +248,20 @@ function nuevoGastoWebFormulario(){
 
     formulario.addEventListener("submit", enviarFormulario);
 
+    let manejadorCancelar = new cancelarFormulario();
+    manejadorCancelar.formulario = formulario;
+    manejadorCancelar.boton = botonAnyadirGastoFormulario;
+
+    let botonCancelar = formulario.querySelector("button.cancelar");
+    botonCancelar.addEventListener("click", manejadorCancelar);
+    botonAnyadirGastoFormulario.setAttribute("disabled", "true");
+
+    let divControles = document.getElementById("controlesprincipales");
+    divControles.append(plantillaFormulario);   
 }
+
+let botonAnyadirGastoFormulario = document.getElementById("anyadirgasto-formulario");
+botonAnyadirGastoFormulario.addEventListener("click", nuevoGastoWebFormulario);
 
 
 function cancelarFormulario(){
@@ -258,16 +271,7 @@ function cancelarFormulario(){
     }
 }
 
-let manejadorCancelar = new cancelarFormulario();
-manejadorCancelar.formulario = formulario;
-manejadorCancelar.boton = botonAnyadirGastoFormulario;
 
-let botonCancelar = formulario.querySelector("button.cancelar");
-botonCancelar.addEventListener("click", manejadorCancelar);
-botonAnyadirGastoFormulario.setAttribute("disabled", "true");
-
-let divControles = document.getElementById("controlesprincipales");
-divControles.append(plantillaFormulario);
 
 function EditarHandleFormulario(){       
 
@@ -281,13 +285,45 @@ function EditarHandleFormulario(){
         let arrayEtiquetas = this.gasto.etiquetas.join(",");
         formulario.elements.etiquetas.value = arrayEtiquetas;     
 
-        let divControles = document.getElementById("controlesprincipales");
+        let manejadorEditarGastoFormulario = new EditarGastoFormularioHandle();
+        manejadorEditarGastoFormulario.gasto = this.gasto;
+        formulario.addEventListener("submit", manejadorEditarGastoFormulario);        
+
+        let divControles = event.currentTarget.closest(".gasto");
         divControles.append(plantillaFormulario);
 
-        let botonEditarFormulario = event.currentTarget;
-        botonEditarFormulario.setAttribute("disabled", "true");
+        let botonEditarFormulario = event.currentTarget;       
+        botonEditarFormulario.setAttribute("disabled", "true");   
 
+        let botonCancelar = formulario.querySelector("button.cancelar");        
+
+        let manejadorCancelar = new cancelarFormulario();
+        manejadorCancelar.formulario = formulario;
+        manejadorCancelar.boton = botonEditarFormulario;             
+
+        botonCancelar.addEventListener("click", manejadorCancelar);
     }
+}
+
+function EditarGastoFormularioHandle(){
+
+    this.handleEvent = function(event){
+        event.preventDefault();
+        let formulario = event.currentTarget;
+        let descripcion = formulario.elements.descripcion.value;
+        let valor = Number(formulario.elements.valor.value);
+        let fecha = formulario.elements.fecha.value;
+        let etiquetas = formulario.elements.etiquetas.value;
+        let arrayEtiquetas = etiquetas.split(",");
+
+        this.gasto.actualizarDescripcion(descripcion);
+        this.gasto.actualizarValor(valor);
+        this.gasto.actualizarFecha(fecha);              
+        this.gasto.anyadirEtiquetas(...arrayEtiquetas);
+
+        repintar();
+    }
+
 }
 
         
