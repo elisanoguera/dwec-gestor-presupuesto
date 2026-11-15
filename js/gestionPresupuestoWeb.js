@@ -1,3 +1,4 @@
+
 // Importamos las funciones desde el archivo gestionPresupuesto.js
 import * as gestionPresupuesto from './gestionPresupuesto.js';
 
@@ -51,7 +52,7 @@ function repintar() {
 
 
 
-// Funcion para actualizar presupuesto
+// Función para actualizar presupuesto
 function actualizarPresupuestoWeb() {
     // Solicitamos el presupuesto con prompt
     const nuevoPresupuesto = prompt('Introduce el nuevo presupuesto:');
@@ -72,10 +73,8 @@ function actualizarPresupuestoWeb() {
 }
 
 // REGISTRO DE EVENTOS DEL BOTÓN DE ACTUALIZAR PRESUPUESTO
-// Buscamos el botón en el HTML
 const botonActualizar = document.getElementById('actualizarpresupuesto');
 
-// Indicamos que, al hacer clic, debe ejecutarse actualizarPresupuestoWeb
 botonActualizar.addEventListener('click', actualizarPresupuestoWeb);
 
 
@@ -144,7 +143,7 @@ function nuevoGastoWeb() {
     const nuevoGasto = new gestionPresupuesto.CrearGasto(
         descripcion,
         valor,
-        fecha,
+        fechaTexto,
         ...etiquetas
     );
 
@@ -156,10 +155,8 @@ function nuevoGastoWeb() {
 }
 
 // REGISTRO DE EVENTOS DEL BOTÓN DE AÑADIR GASTO
-// Buscamos el botón en el HTML
 const botonAnadirGasto = document.getElementById('anyadirgasto');
 
-// Indicamos que, al hacer clic, debe ejecutarse nuevoGastoWeb
 botonAnadirGasto.addEventListener('click', nuevoGastoWeb);
 
 
@@ -177,7 +174,6 @@ function EditarHandle(gasto) {
         // Solicitamos los nuevos datos del gasto
         const nuevaDescripcion = prompt('Introduce la nueva descripción del gasto:');
 
-        // Comprobamos si el usuario ha cancelado
         if (nuevaDescripcion === null) return;
 
         const nuevoValorTexto = prompt('Introduce el nuevo valor del gasto:');
@@ -267,6 +263,203 @@ function BorrarEtiquetasHandle(gasto, etiqueta) {
 }
 
 
+// Función constructora para manejar la cancelación de un formulario
+function CancelarHandle(formulario, boton) {
+
+    this.formulario = formulario;
+    this.boton = boton;
+
+    this.handleEvent = function () {
+
+        // Eliminamos el formulario de la página
+        this.formulario.remove();
+
+        // Volvemos a activar el botón que abrió el formulario
+        this.boton.removeAttribute('disabled');
+    };
+}
+
+
+
+
+function EditarHandleFormulario(gasto) {
+
+    this.gasto = gasto;
+
+    this.handleEvent = function (event) {
+
+        // Copiar la plantilla del formulario
+        const plantillaFormulario = document
+            .getElementById('formulario-template')
+            .content.cloneNode(true);
+
+        // Obtener el formulario
+        const formulario = plantillaFormulario.querySelector('form');
+
+        // Rellenar los campos con los datos actuales del gasto
+        formulario.elements.descripcion.value = this.gasto.descripcion;
+        formulario.elements.valor.value = this.gasto.valor;
+
+        // Convertir la fecha a formato YYYY-MM-DD
+        const fecha = new Date(this.gasto.fecha);
+        const anyo = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+
+        formulario.elements.fecha.value = `${anyo}-${mes}-${dia}`;
+
+        // Mostrar las etiquetas separadas por comas
+        formulario.elements.etiquetas.value =
+            this.gasto.etiquetas.join(', ');
+
+        // Crear el manejador del envío del formulario
+        const manejadorSubmit = new EditarSubmitHandle(this.gasto);
+        formulario.addEventListener('submit', manejadorSubmit);
+
+        // Obtener el botón que ha abierto el formulario
+        const botonEditarFormulario = event.currentTarget;
+
+        // Obtener el botón Cancelar
+        const botonCancelar = formulario.querySelector('button.cancelar');
+
+        // Asociar el manejador de cancelación
+        const manejadorCancelar = new CancelarHandle(
+            formulario,
+            botonEditarFormulario
+        );
+
+        botonCancelar.addEventListener('click', manejadorCancelar);
+
+        // Desactivar el botón de edición
+        botonEditarFormulario.setAttribute('disabled', '');
+
+        // Añadir el formulario dentro del gasto correspondiente
+        botonEditarFormulario.parentElement.append(plantillaFormulario);
+    };
+}
+
+
+
+// Función constructora para gestionar el envío del formulario de edición
+function EditarSubmitHandle(gasto) {
+
+    this.gasto = gasto;
+
+    this.handleEvent = function (event) {
+
+        // Evitar que el formulario recargue la página
+        event.preventDefault();
+
+        // Obtener el formulario
+        const formulario = event.currentTarget;
+
+        // Obtener los valores introducidos
+        const descripcion = formulario.elements.descripcion.value;
+        const valor = parseFloat(formulario.elements.valor.value);
+        const fecha = formulario.elements.fecha.value;
+
+        const etiquetas = formulario.elements.etiquetas.value
+            .split(',')
+            .map(etiqueta => etiqueta.trim())
+            .filter(etiqueta => etiqueta !== '');
+
+        // Actualizar los datos del gasto
+        this.gasto.actualizarDescripcion(descripcion);
+        this.gasto.actualizarValor(valor);
+        this.gasto.actualizarFecha(fecha);
+
+        // Sustituir las etiquetas anteriores por las nuevas
+        this.gasto.borrarEtiquetas(...this.gasto.etiquetas);
+        this.gasto.anyadirEtiquetas(...etiquetas);
+
+        // Eliminar el formulario
+        formulario.remove();
+
+        // Actualizar la interfaz
+        repintar();
+    };
+}
+
+
+
+// Función para mostrar el formulario de creación de gastos
+function nuevoGastoWebFormulario() {
+
+    // Copiamos el contenido de la plantilla HTML
+    const plantillaFormulario = document
+        .getElementById('formulario-template')
+        .content.cloneNode(true);
+
+    // Obtenemos el formulario de la plantilla
+    const formulario = plantillaFormulario.querySelector('form');
+
+    // Obtenemos el botón que ha abierto el formulario
+    const botonFormulario = document.getElementById('anyadirgasto-formulario');
+
+    // Manejamos el envío del formulario
+    formulario.addEventListener('submit', function (event) {
+
+        // Evitamos que se recargue la página
+        event.preventDefault();
+
+        // Obtenemos los campos del formulario
+        const datosFormulario = event.currentTarget;
+
+        const descripcion = datosFormulario.elements.descripcion.value;
+        const valor = parseFloat(datosFormulario.elements.valor.value);
+        const fecha = datosFormulario.elements.fecha.value;
+
+        const etiquetas = datosFormulario.elements.etiquetas.value
+            .split(',')
+            .map(etiqueta => etiqueta.trim())
+            .filter(etiqueta => etiqueta !== '');
+
+        // Creamos el nuevo gasto
+        const nuevoGasto = new gestionPresupuesto.CrearGasto(
+            descripcion,
+            valor,
+            fecha,
+            ...etiquetas
+        );
+
+        // Añadimos el gasto
+        gestionPresupuesto.anyadirGasto(nuevoGasto);
+
+        // Eliminamos el formulario
+        formulario.remove();
+
+        // Actualizamos la interfaz
+        repintar();
+
+        // Reactivamos el botón
+        botonFormulario.removeAttribute('disabled');
+    });
+
+    // Obtenemos el botón Cancelar
+    const botonCancelar = formulario.querySelector('button.cancelar');
+
+    // Creamos su manejador de eventos
+    const manejadorCancelar = new CancelarHandle(
+        formulario,
+        botonFormulario
+    );
+
+    botonCancelar.addEventListener('click', manejadorCancelar);
+
+    // Desactivamos el botón mientras el formulario está abierto
+    botonFormulario.setAttribute('disabled', '');
+
+    // Añadimos el formulario a los controles principales
+    document.getElementById('controlesprincipales')
+        .append(plantillaFormulario);
+}
+
+// Registramos el evento del botón de formulario
+const botonAnadirFormulario = document.getElementById('anyadirgasto-formulario');
+
+botonAnadirFormulario.addEventListener('click', nuevoGastoWebFormulario);
+
+
 
 // Muestra un valor de texto dentro de un elemento HTML.
 function mostrarDatoEnId(idElemento, valor) {
@@ -305,6 +498,9 @@ function mostrarGastoWeb(idElemento, gasto) {
             </div>
             <button class="gasto-editar" type="button">Editar</button>
             <button class="gasto-borrar" type="button">Borrar</button>
+            <button class="gasto-editar-formulario" type="button">
+                Editar (formulario)
+            </button>
         </div>
     `;
 
@@ -317,16 +513,30 @@ function mostrarGastoWeb(idElemento, gasto) {
     // Obtener el botón Editar
     const botonEditar = gastoElemento.querySelector('.gasto-editar');
 
-    // Crear el manejador de edición y asociarlo al botón
+    // Crear y asociar el manejador de edición
     const manejadorEditar = new EditarHandle(gasto);
     botonEditar.addEventListener('click', manejadorEditar);
 
     // Obtener el botón Borrar
     const botonBorrar = gastoElemento.querySelector('.gasto-borrar');
 
-    // Crear el manejador de borrado y asociarlo al botón
+    // Crear y asociar el manejador de borrado
     const manejadorBorrar = new BorrarHandle(gasto);
     botonBorrar.addEventListener('click', manejadorBorrar);
+
+    // Obtener el botón Editar (formulario)
+    const botonEditarFormulario = gastoElemento.querySelector(
+        '.gasto-editar-formulario'
+    );
+
+    // Crear el manejador de edición mediante formulario
+    const manejadorEditarFormulario = new EditarHandleFormulario(gasto);
+
+    // Asociar el evento click
+    botonEditarFormulario.addEventListener(
+        'click',
+        manejadorEditarFormulario
+    );
 
     // Obtener todas las etiquetas del gasto
     const etiquetasElementos = gastoElemento.querySelectorAll('.gasto-etiquetas-etiqueta');
@@ -344,6 +554,7 @@ function mostrarGastoWeb(idElemento, gasto) {
         elementoEtiqueta.addEventListener('click', manejadorEtiqueta);
     });
 }
+
 
 
 // Muestra los totales agrupados por día, mes o año.
