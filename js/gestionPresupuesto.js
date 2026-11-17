@@ -1,3 +1,4 @@
+//Funciones para crear, editar, borrar y mostrar
 let presupuesto = 0;
 let gastos = [];
 let idGasto = 0;
@@ -11,7 +12,7 @@ function actualizarPresupuesto(nuevoValor) {
 }
 
 function mostrarPresupuesto() {
-    return `Tu presupuesto actual es de ${presupuesto} €`;
+    return `Tu presupuesto actual es de ${Math.round(presupuesto * 100) / 100} €`;
 }
 
 //Función constructora de Gasto y sus métodos
@@ -60,18 +61,23 @@ CrearGasto.prototype.borrarEtiquetas = function(...etiquetasBorrar){
         !etiquetasBorrar.includes(etiquetaParaBorrar));  
 };
 
-CrearGasto.prototype.obtenerPeriodoAgrupacion = function(periodo) {
+CrearGasto.prototype.obtenerFechaISO = function(){
     let fecha = new Date(this.fecha);
+    return fecha.toISOString();
+}
+ 
+CrearGasto.prototype.obtenerPeriodoAgrupacion = function(periodo) {
+    let fechaISO = this.obtenerFechaISO();
 
     //Devuelve una cifra tipo 2026-11-06
     if (periodo === 'dia')
-        return fecha.toISOString().slice(0, 10);
+        return fechaISO.slice(0, 10);
     //Devuelve una cifra tipo 2026-11
     if (periodo === 'mes')
-        return fecha.toISOString().slice(0, 7);
+        return fechaISO.slice(0, 7);
     //Devuelve una cifra tipo 2026
     if (periodo === 'anyo')
-        return fecha.toISOString().slice(0, 4);
+        return fechaISO.slice(0, 4);
 }
 
 function esNumeroNoNegativo(numero) {
