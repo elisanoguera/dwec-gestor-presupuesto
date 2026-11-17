@@ -1,21 +1,21 @@
 //Funciones para interactuar con el DOM
-let mostrarDatoEnId = function(idElemento, valor) {
+let mostrarDatoEnId = (idElemento, valor) => {
     let elemento = document.getElementById(idElemento);
     elemento.textContent = valor;
 }
 
-let anyadirElementoEnId = function(idElemento, elementoParaAnyadir) {
+let anyadirElementoEnId = (idElemento, elementoParaAnyadir) => {
     let elemento = document.getElementById(idElemento);
     elemento.append(elementoParaAnyadir);
 }
 
-let crearDivConClase = function(clase) {
+let crearDivConClase = (clase) => {
     let elemento = document.createElement('div');
     elemento.className = clase;
     return elemento;
 }
 
-let crearSpanConClase = function(clase) {
+let crearSpanConClase = (clase) => {
     let elemento = document.createElement('span');
     elemento.className = clase;
     return elemento;
@@ -50,15 +50,19 @@ let mostrarGastoWeb = function(idElemento, gasto) {
     anyadirElementoEnId(idElemento, divGasto);
 }
 
-let pasarPeriodoACastellano = function(periodo) {
-    if (periodo === 'mes')
-        return 'mes';
-    if (periodo === 'dia')
-        return 'día';
-    if (periodo === 'anyo')
-        return 'año';
-    throw new Error('El período no es válido');
-}
+let pasarPeriodoACastellano = (periodo) => {
+    let periodos = {
+        mes: 'mes',
+        dia: 'día',
+        anyo: 'año'
+    };
+
+    if (!periodos[periodo]) {
+        throw new Error('El período no es válido');
+    }
+
+    return periodos[periodo];
+};
 
 let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
     let divAgrupacion = crearDivConClase('agrupacion');
@@ -77,7 +81,7 @@ let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
         divAgrupacion.append(agrupacionDato);
     }
 
-    document.getElementById(idElemento).append(divAgrupacion);
+    anyadirElementoEnId(idElemento, divAgrupacion);
 }
 
 export  {

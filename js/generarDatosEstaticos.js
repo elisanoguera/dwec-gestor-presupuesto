@@ -53,28 +53,20 @@ let gastosFiltrados4 = gestionPresupuesto.filtrarGastos({
     etiquetasTiene: ['comida', 'transporte'] 
 });
 
-//Mostrar gastos
-gastosCompletos.forEach((gasto) => {
-    gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-completo', gasto);
-});
+//Mostrar gastos totales y filtrados
+let mostrarListaGastoWeb = function(listaGastos, idElemento) {
+    listaGastos.forEach((gasto) => {
+        gestionPresupuestoWeb.mostrarGastoWeb(idElemento, gasto)
+    }
+)};
 
-gastosFiltrados1.forEach((gasto) => {
-    gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-filtrado-1', gasto);
-});
+mostrarListaGastoWeb(gastosCompletos, 'listado-gastos-completo');
+mostrarListaGastoWeb(gastosFiltrados1, 'listado-gastos-filtrado-1');
+mostrarListaGastoWeb(gastosFiltrados2, 'listado-gastos-filtrado-2');
+mostrarListaGastoWeb(gastosFiltrados3, 'listado-gastos-filtrado-3');
+mostrarListaGastoWeb(gastosFiltrados4, 'listado-gastos-filtrado-4');
 
-gastosFiltrados2.forEach((gasto) => {
-    gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-filtrado-2', gasto);
-});
-
-gastosFiltrados3.forEach((gasto) => {
-    gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-filtrado-3', gasto);
-});
-
-gastosFiltrados4.forEach((gasto) => {
-    gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-filtrado-4', gasto);
-});
-
-//Mostrar gastos agrupados
+//Mostrar gastos agrupados por dia, mes y año
 
 let gastosAgrupadosDia = gestionPresupuesto.agruparGastos('dia', '', '', '');
 gestionPresupuestoWeb.mostrarGastosAgrupadosWeb('agrupacion-dia', gastosAgrupadosDia, 'dia');
