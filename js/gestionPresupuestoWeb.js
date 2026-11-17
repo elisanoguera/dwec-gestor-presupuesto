@@ -60,7 +60,17 @@ function mostrarGastoWeb(idElemento, gasto) {
     manejadorBorrar.gasto = gasto;
     botonBorrar.addEventListener("click", manejadorBorrar);
 
-    divGasto.append(divDescripcion, divFecha, divValor, divEtiquetas, botonEditar, botonBorrar);
+    // Botón Editar (formulario)
+    let botonEditarFormulario = document.createElement("button");
+    botonEditarFormulario.type = "button";
+    botonEditarFormulario.className = "gasto-editar-formulario";
+    botonEditarFormulario.textContent = "Editar (formulario)";
+
+    let manejadorEditarFormulario = new EditarHandleFormulario();
+    manejadorEditarFormulario.gasto = gasto;
+    botonEditarFormulario.addEventListener("click", manejadorEditarFormulario);
+
+    divGasto.append(divDescripcion, divFecha, divValor, divEtiquetas, botonEditar, botonBorrar, botonEditarFormulario);
     contenedor.append(divGasto);
 }
 
@@ -209,6 +219,11 @@ function CancelarFormularioHandle() {
     this.handleEvent = function(event) {
         this.formulario.remove();
         this.boton.removeAttribute("disabled");
+    };
+}
+
+function EditarHandleFormulario() {
+    this.handleEvent = function(event) {
     };
 }
 
