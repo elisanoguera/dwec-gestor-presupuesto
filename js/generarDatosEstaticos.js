@@ -73,3 +73,14 @@ gastosFiltrados3.forEach((gasto) => {
 gastosFiltrados4.forEach((gasto) => {
     gestionPresupuestoWeb.mostrarGastoWeb('listado-gastos-filtrado-4', gasto);
 });
+
+//Mostrar gastos agrupados
+
+let gastosAgrupadosDia = gestionPresupuesto.agruparGastos('dia', '', '', '');
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb('agrupacion-dia', gastosAgrupadosDia, 'dia');
+
+let gastosAgrupadosMes = gestionPresupuesto.agruparGastos('mes', '', '', '');
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb('agrupacion-mes', gastosAgrupadosMes, 'mes');
+
+let gastosAgrupadosAnyo = gestionPresupuesto.agruparGastos('anyo', '', '', '');
+gestionPresupuestoWeb.mostrarGastosAgrupadosWeb('agrupacion-anyo', gastosAgrupadosAnyo, 'anyo');
