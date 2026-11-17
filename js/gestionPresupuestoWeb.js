@@ -224,6 +224,56 @@ function CancelarFormularioHandle() {
 
 function EditarHandleFormulario() {
     this.handleEvent = function(event) {
+        // 1. Copiar la plantilla y localizar el <form>
+        let plantillaFormulario = document.getElementById("formulario-template").content.cloneNode(true);
+        let formulario = plantillaFormulario.querySelector("form");
+
+        // 2. Rellenar los campos con los datos del gasto
+        formulario.elements.descripcion.value = this.gasto.descripcion;
+        formulario.elements.valor.value = this.gasto.valor;
+        formulario.elements.fecha.value = new Date(this.gasto.fecha).toISOString().slice(0, 10);
+        formulario.elements.etiquetas.value = this.gasto.etiquetas.join(",");
+
+        // 3. Manejador del submit (objeto, porque necesita el gasto)
+        let manejadorEnviar = new EnviarEditarFormularioHandle();
+        manejadorEnviar.gasto = this.gasto;
+        formulario.addEventListener("submit", manejadorEnviar);
+
+        // 4. Manejador del Cancelar (reutilizamos el constructor de la parte 3)
+        let botonCancelar = formulario.querySelector("button.cancelar");
+        let manejadorCancelar = new CancelarFormularioHandle();
+        manejadorCancelar.formulario = formulario;
+        manejadorCancelar.boton = event.currentTarget;   // el botón "Editar (formulario)" pulsado
+        botonCancelar.addEventListener("click", manejadorCancelar);
+
+        // 5. Desactivar el botón "Editar (formulario)" de este gasto
+        event.currentTarget.setAttribute("disabled", "");
+
+        // 6. Insertar el formulario dentro del div.gasto
+        event.currentTarget.parentElement.append(plantillaFormulario);
+    };
+}
+
+function EnviarEditarFormularioHandle() {
+    this.handleEvent = function(event) {
+        event.preventDefault();
+
+        let formulario = event.currentTarget;
+
+        let etiquetas = formulario.elements.etiquetas.value
+            .split(",")
+            .map(etiqueta => etiqueta.trim())
+            .filter(etiqueta => etiqueta !== "");
+
+        this.gasto.actualizarDescripcion(formulario.elements.descripcion.value);
+        this.gasto.actualizarValor(Number(formulario.elements.valor.value));
+        this.gasto.actualizarFecha(formulario.elements.fecha.value);
+
+        // Sustituir las etiquetas: borrar las actuales y añadir las del formulario
+        this.gasto.borrarEtiquetas(...this.gasto.etiquetas);
+        this.gasto.anyadirEtiquetas(...etiquetas);
+
+        repintar();
     };
 }
 
