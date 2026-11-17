@@ -62,12 +62,21 @@ export const mostrarGastoWeb = (idElemento, gasto) => {
   deleteHandler.gasto = gasto;
   btnBorrar.addEventListener("click", deleteHandler);
 
+  let btnEditarFormulario = document.createElement("button");
+  btnEditarFormulario.setAttribute("type", "button");
+  btnEditarFormulario.setAttribute("class", "gasto-editar-formulario");
+  btnEditarFormulario.textContent = "Editar (Formulario)"
+  let editHandlerForm = new EditarHandleFormulario();
+  editHandlerForm.gasto = gasto;
+  btnEditarFormulario.addEventListener("click", editHandlerForm);
+
   divGasto.append(divGastoDescripcion);
   divGasto.append(divGastoFecha);
   divGasto.append(divGastoValor);
   divGasto.append(divGastoEtiquetas);
   divGasto.append(btnEditar);
   divGasto.append(btnBorrar);
+  divGasto.append(btnEditarFormulario);
   elementById.append(divGasto);
 };
 
@@ -190,5 +199,45 @@ function CancelarHandle() {
   this.handleEvent = () => {
     this.formulario.remove();
     this.botonAnyadir.disabled = false;
+  }
+}
+
+function SubmitHandleFormulario() {
+  this.handleEvent = () => {
+    event.preventDefault();
+    let currentEventTarget = event.currentTarget;
+
+    this.gasto.actualizarDescripcion(currentEventTarget.descripcion.value, this.gasto.descripcion);
+    this.gasto.actualizarValor(parseFloat(currentEventTarget.valor.value), this.gasto.valor);
+    this.gasto.actualizarFecha(Date.parse(currentEventTarget.fecha.value), this.gasto.fecha);
+    this.gasto.anyadirEtiquetas(...currentEventTarget.etiquetas.value.split(','))
+
+    repintar();
+  }
+}
+
+function EditarHandleFormulario() {
+  this.handleEvent = () => {
+      let editarGastoFormularioBtn = event.currentTarget;
+      editarGastoFormularioBtn.disabled = true;
+
+      let formTemplate = document.getElementById("formulario-template").content.cloneNode(true);
+      var templateFormNode = formTemplate.querySelector("form");
+      let templateFormElements = templateFormNode.elements;
+
+      templateFormElements.descripcion.value = this.gasto.descripcion;
+      templateFormElements.valor.value = this.gasto.valor;
+      templateFormElements.fecha.value = this.gasto.fecha;
+
+      let submitHandlerForm = new SubmitHandleFormulario();
+      submitHandlerForm.gasto = this.gasto;
+
+      let cancelHandlerForm = new CancelarHandle();
+      cancelHandlerForm.formulario = templateFormNode;
+      cancelHandlerForm.botonAnyadir = editarGastoFormularioBtn;
+
+      templateFormNode.querySelector("button.cancelar").addEventListener("click", cancelHandlerForm);
+      templateFormNode.addEventListener("submit", submitHandlerForm);
+      event.currentTarget.parentElement.append(templateFormNode);
   }
 }
