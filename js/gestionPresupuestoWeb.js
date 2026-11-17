@@ -3,6 +3,7 @@ import * as gp from "./gestionPresupuesto.js";
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("actualizarpresupuesto").addEventListener("click", actualizarPresupuestoWeb);
   document.getElementById("anyadirgasto").addEventListener("click", nuevoGastoWeb);
+  document.getElementById("anyadirgasto-formulario").addEventListener("click", nuevoGastoWebFormulario);
 });
 
 export const mostrarDatoEnId = (idElemento, valor) => {
@@ -128,6 +129,38 @@ const nuevoGastoWeb = () => {
   repintar();
 };
 
+const nuevoGastoWebFormulario = () => {
+  let anyadirgastoFormularioBtn = document.getElementById("anyadirgasto-formulario");
+  anyadirgastoFormularioBtn.disabled = true;
+
+  let formTemplate = document.getElementById("formulario-template").content.cloneNode(true);
+  var templateFormNode = formTemplate.querySelector("form");
+
+  templateFormNode.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let currentEventTarget = event.currentTarget;
+
+    gp.anyadirGasto(new gp.CrearGasto(
+      currentEventTarget.descripcion.value,
+      parseFloat(currentEventTarget.valor.value),
+      Date.parse(currentEventTarget.fecha.value),
+      ...currentEventTarget.etiquetas.value.split(',')
+    ))
+
+      repintar();
+      currentEventTarget.remove();
+      anyadirgastoFormularioBtn.disabled = false;
+  })
+
+  let cancelHandler = new CancelarHandle();
+  cancelHandler.formulario = templateFormNode;
+  cancelHandler.botonAnyadir = anyadirgastoFormularioBtn;
+  formTemplate.querySelector("button.cancelar").addEventListener("click", cancelHandler);
+
+  document.getElementById("controlesprincipales").append(templateFormNode);
+}
+
 function EditarHandle() {
   this.handleEvent = () => {
     this.gasto.actualizarDescripcion(prompt("Dime la descripción del gasto", this.gasto.descripcion));
@@ -151,4 +184,11 @@ function BorrarEtiquetasHandle() {
         this.gasto.borrarEtiquetas(this.etiqueta);
         repintar();
     }
+}
+
+function CancelarHandle() {
+  this.handleEvent = () => {
+    this.formulario.remove();
+    this.botonAnyadir.disabled = false;
+  }
 }
