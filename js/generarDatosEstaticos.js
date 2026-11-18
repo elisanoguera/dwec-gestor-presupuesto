@@ -94,3 +94,13 @@ let gastosMayores50 = gestion.filtrarGastos({
 for (let gasto of gastosMayores50) {
   web.mostrarGastoWeb('listado-gastos-filtrado-2', gasto);
 }
+
+// Mostrar gastos de más de 200 € con etiqueta seguros
+let gastosSeguros = gestion.filtrarGastos({
+  valorMinimo: 200,
+  etiquetasTiene: ['seguros'],
+});
+
+for (let gasto of gastosSeguros) {
+  web.mostrarGastoWeb('listado-gastos-filtrado-3', gasto);
+}
