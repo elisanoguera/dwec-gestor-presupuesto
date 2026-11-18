@@ -104,3 +104,13 @@ let gastosSeguros = gestion.filtrarGastos({
 for (let gasto of gastosSeguros) {
   web.mostrarGastoWeb('listado-gastos-filtrado-3', gasto);
 }
+
+// Mostrar gastos inferiores a 50 € con etiquetas comida o transporte
+let gastosComidaTransporte = gestion.filtrarGastos({
+  valorMaximo: 50,
+  etiquetasTiene: ['comida', 'transporte'],
+});
+
+for (let gasto of gastosComidaTransporte) {
+  web.mostrarGastoWeb('listado-gastos-filtrado-4', gasto);
+}
