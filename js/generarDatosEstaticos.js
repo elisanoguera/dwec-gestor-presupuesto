@@ -75,3 +75,13 @@ let listado = gestion.listarGastos();
 for (let gasto of listado) {
   web.mostrarGastoWeb('listado-gastos-completo', gasto);
 }
+
+// Mostrar gastos de septiembre de 2021
+let gastosSeptiembre = gestion.filtrarGastos({
+  fechaDesde: '2021-09-01',
+  fechaHasta: '2021-09-30',
+});
+
+for (let gasto of gastosSeptiembre) {
+  web.mostrarGastoWeb('listado-gastos-filtrado-1', gasto);
+}
