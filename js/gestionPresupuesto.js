@@ -100,6 +100,18 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       }
     }
   };
+
+  this.obtenerPeriodoAgrupacion = function (periodo) {
+    let fecha = new Date(this.fecha).toISOString();
+
+    if (periodo === 'anyo') {
+      return fecha.substring(0, 4);
+    } else if (periodo === 'dia') {
+      return fecha.substring(0, 10);
+    } else {
+      return fecha.substring(0, 7);
+    }
+  };
 }
 
 function listarGastos() {
