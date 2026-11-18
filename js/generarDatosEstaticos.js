@@ -114,3 +114,8 @@ let gastosComidaTransporte = gestion.filtrarGastos({
 for (let gasto of gastosComidaTransporte) {
   web.mostrarGastoWeb('listado-gastos-filtrado-4', gasto);
 }
+
+// Mostrar gastos agrupados por día
+let gastosPorDia = gestion.agruparGastos('dia');
+
+web.mostrarGastosAgrupadosWeb('agrupacion-dia', gastosPorDia, 'dia');
