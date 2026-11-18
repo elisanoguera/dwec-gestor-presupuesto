@@ -124,3 +124,8 @@ web.mostrarGastosAgrupadosWeb('agrupacion-dia', gastosPorDia, 'dia');
 let gastosPorMes = gestion.agruparGastos('mes');
 
 web.mostrarGastosAgrupadosWeb('agrupacion-mes', gastosPorMes, 'mes');
+
+// Mostrar gastos agrupados por año
+let gastosPorAnyo = gestion.agruparGastos('anyo');
+
+web.mostrarGastosAgrupadosWeb('agrupacion-anyo', gastosPorAnyo, 'anyo');
