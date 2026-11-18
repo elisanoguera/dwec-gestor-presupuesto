@@ -1,12 +1,13 @@
 import { CrearGasto } from './gestionPresupuesto.js';
 
-let gasto1 = new CrearGasto(
-  'Supermercado',
-  50,
-  '2026-11-18T10:30',
-  'casa',
-  'comida',
-  'compra',
-);
+let gasto1 = new CrearGasto('Comida', 50, '2026-11-18');
 
-console.log(gasto1.mostrarGastoCompleto());
+console.log('Fecha inicial:', gasto1.fecha);
+
+gasto1.actualizarFecha('2026-11-20');
+
+console.log('Fecha actualizada:', gasto1.fecha);
+
+gasto1.actualizarFecha('fecha incorrecta');
+
+console.log('Fecha después del error:', gasto1.fecha);

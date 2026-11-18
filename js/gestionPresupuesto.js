@@ -81,6 +81,12 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       this.valor = nuevoValor;
     }
   };
+
+  this.actualizarFecha = function (nuevaFecha) {
+    if (typeof nuevaFecha === 'string' && !isNaN(Date.parse(nuevaFecha))) {
+      this.fecha = Date.parse(nuevaFecha);
+    }
+  };
 }
 
 function listarGastos() {
