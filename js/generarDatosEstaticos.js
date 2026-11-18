@@ -85,3 +85,12 @@ let gastosSeptiembre = gestion.filtrarGastos({
 for (let gasto of gastosSeptiembre) {
   web.mostrarGastoWeb('listado-gastos-filtrado-1', gasto);
 }
+
+// Mostrar gastos de más de 50 €
+let gastosMayores50 = gestion.filtrarGastos({
+  valorMinimo: 50,
+});
+
+for (let gasto of gastosMayores50) {
+  web.mostrarGastoWeb('listado-gastos-filtrado-2', gasto);
+}
