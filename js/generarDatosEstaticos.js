@@ -68,3 +68,10 @@ web.mostrarDatoEnId('gastos-totales', gestion.calcularTotalGastos().toFixed(2));
 
 // Mostrar balance total
 web.mostrarDatoEnId('balance-total', gestion.calcularBalance().toFixed(2));
+
+// Mostrar listado completo de gastos
+let listado = gestion.listarGastos();
+
+for (let gasto of listado) {
+  web.mostrarGastoWeb('listado-gastos-completo', gasto);
+}
