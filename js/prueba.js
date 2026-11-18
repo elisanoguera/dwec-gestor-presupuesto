@@ -1,25 +1,22 @@
 import {
   CrearGasto,
   anyadirGasto,
+  borrarGasto,
   listarGastos,
 } from './gestionPresupuesto.js';
 
-/*let gasto1 = new CrearGasto('Comida', 50);
-
-let gasto2 = new CrearGasto('Supermercado', 80, '2026-11-18', 'casa', 'comida');
-
-console.log(gasto1);
-console.log(gasto2);
-
-console.log(gasto1.etiquetas);
-console.log(gasto2.etiquetas);
-console.log(gasto2.fecha);
-*/
-
-let gasto1 = new CrearGasto('Comida', 50);
-let gasto2 = new CrearGasto('Gasolina', 30);
+let gasto1 = new CrearGasto('Comida', 20);
+let gasto2 = new CrearGasto('Gasolina', 50);
+let gasto3 = new CrearGasto('Internet', 30);
 
 anyadirGasto(gasto1);
 anyadirGasto(gasto2);
+anyadirGasto(gasto3);
 
+console.log('Antes de borrar:');
+console.log(listarGastos());
+
+borrarGasto(1);
+
+console.log('Después de borrar:');
 console.log(listarGastos());
