@@ -56,7 +56,8 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
   //Métodos
 
   this.mostrarGasto = function () {
-    return `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    let txt = `Gasto correspondiente a ${this.descripcion} con valor ${this.valor} €`;
+    return txt;
   };
 
   this.mostrarGastoCompleto = function () {
@@ -66,8 +67,10 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
     texto += `Etiquetas:`;
 
     for (let etiqueta of this.etiquetas) {
-      texto += `\n - ${etiqueta}`;
+      texto += `\n- ${etiqueta}`;
     }
+
+    texto += '\n';
 
     return texto;
   };
