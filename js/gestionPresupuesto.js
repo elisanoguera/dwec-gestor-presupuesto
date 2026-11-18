@@ -87,6 +87,16 @@ function CrearGasto(descripcion, valor, fecha, ...etiquetas) {
       this.fecha = Date.parse(nuevaFecha);
     }
   };
+
+  this.borrarEtiquetas = function (...etiquetas) {
+    for (let etiqueta of etiquetas) {
+      let posicion = this.etiquetas.indexOf(etiqueta);
+
+      if (posicion !== -1) {
+        this.etiquetas.splice(posicion, 1);
+      }
+    }
+  };
 }
 
 function listarGastos() {
