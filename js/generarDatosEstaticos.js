@@ -119,3 +119,8 @@ for (let gasto of gastosComidaTransporte) {
 let gastosPorDia = gestion.agruparGastos('dia');
 
 web.mostrarGastosAgrupadosWeb('agrupacion-dia', gastosPorDia, 'dia');
+
+// Mostrar gastos agrupados por mes
+let gastosPorMes = gestion.agruparGastos('mes');
+
+web.mostrarGastosAgrupadosWeb('agrupacion-mes', gastosPorMes, 'mes');
