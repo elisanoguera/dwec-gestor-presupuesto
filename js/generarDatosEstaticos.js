@@ -62,3 +62,9 @@ gestion.anyadirGasto(gasto3);
 gestion.anyadirGasto(gasto4);
 gestion.anyadirGasto(gasto5);
 gestion.anyadirGasto(gasto6);
+
+// Mostrar total de gastos
+web.mostrarDatoEnId('gastos-totales', gestion.calcularTotalGastos().toFixed(2));
+
+// Mostrar balance total
+web.mostrarDatoEnId('balance-total', gestion.calcularBalance().toFixed(2));
