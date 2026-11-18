@@ -1,15 +1,12 @@
-import {
-  CrearGasto,
-  anyadirGasto,
-  calcularTotalGastos,
-} from './gestionPresupuesto.js';
+import { CrearGasto } from './gestionPresupuesto.js';
 
-let gasto1 = new CrearGasto('Comida', 50);
-let gasto2 = new CrearGasto('Gasolina', 30);
-let gasto3 = new CrearGasto('Internet', 40);
+let gasto1 = new CrearGasto(
+  'Supermercado',
+  50,
+  '2026-11-18T10:30',
+  'casa',
+  'comida',
+  'compra',
+);
 
-anyadirGasto(gasto1);
-anyadirGasto(gasto2);
-anyadirGasto(gasto3);
-
-console.log(calcularTotalGastos());
+console.log(gasto1.mostrarGastoCompleto());
