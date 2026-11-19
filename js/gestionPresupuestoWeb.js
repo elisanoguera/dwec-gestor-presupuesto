@@ -29,14 +29,12 @@ let repintar = () => {
     mostrarListaGastoWeb(gastosCompletos, 'listado-gastos-completo');
 }
 
-//Botones
-let btnActualizarPresupuesto = document.getElementById('actualizarpresupuesto');
-let btnAnyadirGasto = document.getElementById('anyadirgasto');
-
 //Evento para actualizar presupuesto con prompt
+let btnActualizarPresupuesto = document.getElementById('actualizarpresupuesto');
+
 btnActualizarPresupuesto.addEventListener('click', () => {
     let nuevoPresupuesto = prompt('Introduzca un nuevo presupuesto:');
-
+    
     if (gestionPresupuesto.esNumeroNoNegativo(nuevoPresupuesto)) {
         gestionPresupuesto.actualizarPresupuesto(nuevoPresupuesto);
         repintar();
@@ -46,6 +44,8 @@ btnActualizarPresupuesto.addEventListener('click', () => {
 });
 
 //Evento para añadir gasto con prompts
+let btnAnyadirGasto = document.getElementById('anyadirgasto');
+
 btnAnyadirGasto.addEventListener('click', () => {
     nuevoGastoWeb();
 });
@@ -66,7 +66,55 @@ function transformarEtiquetasEnArray(etiquetasString) {
     return etiquetasString.split(',').map(etiqueta => etiqueta.trim());
 }
 
-//Funciones manejadoras de eventos para editar gastos.
+//Objeto manejador de eventos EditarHandle
+function EditarHandle(gasto) {
+    this.gasto = gasto;
+}
+
+EditarHandle.prototype.handleEvent = function(event) {
+    let descripcion = prompt(
+        'Introduzca la descripción:',
+        this.gasto.descripcion
+    );
+
+    let valor = prompt(
+        'Introduzca el valor:',
+        this.gasto.valor
+    );
+
+    let fecha = prompt(
+        'Introduzca la fecha:',
+        this.gasto.obtenerFechaISO()
+    );
+
+    let etiquetas = prompt(
+        'Introduzca las etiquetas separadas por comas:',
+        this.gasto.etiquetas.join(',')
+    );
+
+    valor = Number(valor);
+    etiquetas = transformarEtiquetasEnArray(etiquetas);
+
+    this.gasto.actualizarDescripcion(descripcion);
+    this.gasto.actualizarValor(valor);
+    this.gasto.actualizarFecha(fecha);
+    this.gasto.anyadirEtiquetas(...etiquetas);
+
+    repintar();
+};
+
+let objetoManejador = {
+    handleEvent(event) {
+        alert(event.type + ' en ' + event.currentTarget);
+    }
+};
+
+let handler = {
+    handleEvent(event) {
+        alert(event.type + ' en ' + event.currentTarget);
+    }
+};
+
 
 //Funciones para pintar datos en el HTML
 let limpiarElemento = (idElemento) => {
@@ -100,7 +148,6 @@ let crearSpanConClaseYHandler = (clase) => {
 let crearButtonConClaseYHandler = (nombre, clase, handler) => {
     let elemento = document.createElement('button');
     elemento.className = clase;
-    elemento.type = 'button';
     elemento.textContent = nombre;
     elemento.addEventListener('click', handler);
     return elemento;
@@ -110,8 +157,7 @@ function redondearDosCifras(numero) {
     return Math.round(numero * 100) / 100;
 }
 
-//Un elemento es como un objeto, hay que copiarlo con elemento.cloneNode(true);
-//Copia los elementos y todos los descendentes (true) pero no copia eventos
+//Pintar el gasto
 let mostrarGastoWeb = function(idElemento, gasto) {
     let divGasto = crearDivConClase('gasto');
     let descripcionGasto = crearDivConClase('gasto-descripcion');
@@ -129,7 +175,11 @@ let mostrarGastoWeb = function(idElemento, gasto) {
         etiquetasGasto.append(etiquetaGasto);
     })
 
-    let btnEditar = crearButtonConClaseYHandler('Editar', 'gasto-editar', editarHandle);
+    let btnEditar = crearButtonConClaseYHandler(
+        'Editar',
+        'gasto-editar',
+        new EditarHandle(gasto));
+
     let btnBorrar = crearButtonConClaseYHandler('Borrar', 'gasto-borrar', objetoManejador);
 
     divGasto.append(
@@ -158,28 +208,7 @@ let pasarPeriodoACastellano = (periodo) => {
     return periodos[periodo];
 };
 
-//Constructor del bjeto manejador de eventos
-function EditarHandle(handler) {
-
-}
-
-
-let editarHandle =  new EditarHandle();
-
-
-let objetoManejador = {
-    handleEvent(event) {
-        alert(event.type + ' en ' + event.currentTarget);
-    }
-};
-
-let handler = {
-    handleEvent(event) {
-        alert(event.type + ' en ' + event.currentTarget);
-    }
-};
-
-
+//Pintar una agrupación de gastos
 let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
     let divAgrupacion = crearDivConClase('agrupacion');
     let tituloAgrupacion = document.createElement('h1');
@@ -202,12 +231,7 @@ let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
 
 
 
-
-
-
-
-
-//DATOS DE PRUEBA
+//DATOS DE PRUEBA----------------------------------------------------------------
 gestionPresupuesto.actualizarPresupuesto(1500);
 
 let datosDeGastos = [
