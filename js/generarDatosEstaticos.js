@@ -1,3 +1,4 @@
+//Datos de prueba para el desarrollo
 import * as gestionPresupuestoWeb from './gestionPresupuestoWeb.js';
 import * as gestionPresupuesto from './gestionPresupuesto.js';
 

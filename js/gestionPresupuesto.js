@@ -7,7 +7,7 @@ function actualizarPresupuesto(nuevoValor) {
     if (!esNumeroNoNegativo(nuevoValor)) {
         return -1;
     }
-    presupuesto = nuevoValor;
+    presupuesto = Number(nuevoValor);
     return presupuesto;
 }
 
@@ -81,15 +81,19 @@ CrearGasto.prototype.obtenerPeriodoAgrupacion = function(periodo) {
 }
 
 function esNumeroNoNegativo(numero) {
-    return Number.isFinite(numero) && numero >= 0;
+    return numero !== '' &&
+            numero !== null &&
+            Number.isFinite(Number(numero)) &&
+            Number(numero) >= 0;
 }
 
 function obtenerValorInicial(numero) {
-    return esNumeroNoNegativo(numero) ? numero : 0;
+    return esNumeroNoNegativo(numero) ? Number(numero) : 0;
 }
 
 function esFechaValida(fecha) {
-        return Number.isFinite(Date.parse(fecha));
+        return typeof fecha === 'string' &&
+            Number.isFinite(Date.parse(fecha));
     };
 
 function imprimirFechaFormatoDate(fecha) {
@@ -204,5 +208,7 @@ export   {
     calcularTotalGastos,
     calcularBalance,
     filtrarGastos,
-    agruparGastos
+    agruparGastos,
+    esNumeroNoNegativo,
+    esFechaValida,
 }
