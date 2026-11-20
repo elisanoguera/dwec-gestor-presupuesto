@@ -130,12 +130,15 @@ let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
     tituloAgrupacion.textContent = `Gastos agrupados por ${pasarPeriodoACastellano(periodo)}`;
     divAgrupacion.append(tituloAgrupacion);
     
-    for (let [grupoFecha, valorGrupo] of Object.entries(agrup)) {
+    for (let grupoFecha in agrup) {
+        let valorGrupo = agrup[grupoFecha];
+
         let agrupacionDato = crearDivConClase('agrupacion-dato');
         let agrupacionDatoClave = crearSpanConClase('agrupacion-dato-clave');
         agrupacionDatoClave.textContent = grupoFecha;
         let agrupacionDatoValor = crearSpanConClase('agrupacion-dato-valor');
         agrupacionDatoValor.textContent = valorGrupo;
+
         agrupacionDato.append(agrupacionDatoClave, agrupacionDatoValor);
         divAgrupacion.append(agrupacionDato);
     }
