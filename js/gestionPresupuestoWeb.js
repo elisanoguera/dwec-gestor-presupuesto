@@ -5,7 +5,9 @@ import * as gestionPresupuesto from './gestionPresupuesto.js';
 //Actualizar presupuesto, total, balance, listado gastos...
 //al añadir, borrar o modificar un gasto
 let repintar = () => {
-    
+    //Listamos los gastos actualizados 
+    let gastosCompletos = gestionPresupuesto.listarGastos();
+
     mostrarDatoEnId('presupuesto', gestionPresupuesto.mostrarPresupuesto());
   
     mostrarDatoEnId('gastos-totales', 
@@ -16,7 +18,6 @@ let repintar = () => {
         redondearDosCifras(gestionPresupuesto.calcularBalance())
     );
 
-    let gastosCompletos = gestionPresupuesto.listarGastos();
 
     let mostrarListaGastoWeb = function(listaGastos, idElemento) {
 
@@ -25,6 +26,7 @@ let repintar = () => {
         });
     };
 
+    //Limpiar para que no se duplique la información del elemento
     limpiarElemento('listado-gastos-completo');
     mostrarListaGastoWeb(gastosCompletos, 'listado-gastos-completo');
 }
@@ -103,18 +105,28 @@ EditarHandle.prototype.handleEvent = function(event) {
     repintar();
 };
 
-let objetoManejador = {
-    handleEvent(event) {
-        alert(event.type + ' en ' + event.currentTarget);
-    }
-};
+//Objeto manejador de eventos BorrarHandle
+function BorrarHandle(gasto) {
+    this.gasto = gasto;
+}
 
-let handler = {
-    handleEvent(event) {
-        alert(event.type + ' en ' + event.currentTarget);
-    }
-};
+BorrarHandle.prototype.handleEvent  = function(event) {
+    gestionPresupuesto.borrarGasto(this.gasto.id);
 
+    repintar();
+}
+
+//Objeto manejador de eventos BorrarEtiquetasHandle
+function BorrarEtiquetasHandle(gasto, etiqueta) {
+    this.gasto = gasto;
+    this.etiqueta = etiqueta;
+}
+
+BorrarEtiquetasHandle.prototype.handleEvent = function(event) {
+    this.gasto.borrarEtiquetas(this.etiqueta);
+
+    repintar();
+}
 
 //Funciones para pintar datos en el HTML
 let limpiarElemento = (idElemento) => {
@@ -138,7 +150,13 @@ let crearDivConClase = (clase) => {
     return elemento;
 };
 
-let crearSpanConClaseYHandler = (clase) => {
+let crearSpanConClase = (clase) => {
+    let elemento = document.createElement('span');
+    elemento.className = clase;
+    return elemento;
+};
+
+let crearSpanConClaseYHandler = (clase, handler) => {
     let elemento = document.createElement('span');
     elemento.className = clase;
     elemento.addEventListener('click', handler);
@@ -170,17 +188,24 @@ let mostrarGastoWeb = function(idElemento, gasto) {
     valorGasto.textContent = gasto.valor;
     
     gasto.etiquetas.forEach((etiqueta) => {
-        let etiquetaGasto = crearSpanConClaseYHandler('gasto-etiquetas-etiqueta', handler);
+        let etiquetaGasto = crearSpanConClaseYHandler(
+            'gasto-etiquetas-etiqueta',
+            new BorrarEtiquetasHandle(gasto, etiqueta));
+
         etiquetaGasto.textContent = etiqueta;
         etiquetasGasto.append(etiquetaGasto);
     })
 
+    //Crear los botones con sus objetos manejadores de eventos
     let btnEditar = crearButtonConClaseYHandler(
         'Editar',
         'gasto-editar',
         new EditarHandle(gasto));
 
-    let btnBorrar = crearButtonConClaseYHandler('Borrar', 'gasto-borrar', objetoManejador);
+    let btnBorrar = crearButtonConClaseYHandler(
+        'Borrar',
+        'gasto-borrar',
+        new BorrarHandle(gasto));
 
     divGasto.append(
         descripcionGasto,
@@ -218,9 +243,9 @@ let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
     
     for (let [grupoFecha, valorGrupo] of Object.entries(agrup)) {
         let agrupacionDato = crearDivConClase('agrupacion-dato');
-        let agrupacionDatoClave = crearSpanConClaseYHandler('agrupacion-dato-clave', handler);
+        let agrupacionDatoClave = crearSpanConClase('agrupacion-dato-clave');
         agrupacionDatoClave.textContent = grupoFecha;
-        let agrupacionDatoValor = crearSpanConClaseYHandler('agrupacion-dato-valor', handler);
+        let agrupacionDatoValor = crearSpanConClase('agrupacion-dato-valor');
         agrupacionDatoValor.textContent = valorGrupo;
         agrupacionDato.append(agrupacionDatoClave, agrupacionDatoValor);
         divAgrupacion.append(agrupacionDato);
@@ -230,8 +255,7 @@ let mostrarGastosAgrupadosWeb = function(idElemento, agrup, periodo) {
 }
 
 
-
-//DATOS DE PRUEBA----------------------------------------------------------------
+//DATOS DE PRUEBA - SIN AGRUPAR NI FILTRAR----------------------------------------------------------------
 gestionPresupuesto.actualizarPresupuesto(1500);
 
 let datosDeGastos = [
