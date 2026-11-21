@@ -40,14 +40,20 @@ let crearSpanConClaseYHandler = (clase, handler) => {
     return elemento;
 };
 
-let crearButtonConClaseYHandler = (nombre, clase, handler) => {
+let crearButtonConClaseYHandler = (nombre, clase, evento, handler) => {
     let elemento = document.createElement('button');
     elemento.className = clase;
     elemento.textContent = nombre;
     elemento.type = 'button';
-    elemento.addEventListener('click', handler);
+    elemento.addEventListener(evento, handler);
     return elemento;
 };
+
+let crearFormConIdPlantilla = (idPlantilla) => {
+    let plantilla = document.getElementById(idPlantilla);
+    let copiaPlantilla = plantilla.content.cloneNode(true);
+    return copiaPlantilla.querySelector('form');
+}
 
 function redondearDosCifras(numero) {
     return Math.round(numero * 100) / 100;
@@ -79,23 +85,32 @@ let mostrarGastoWeb = function(idElemento, gasto) {
     });
 
     //Crear los botones con sus objetos manejadores de eventos
-    let btnEditar = crearButtonConClaseYHandler(
-        'Editar',
+    let btnEditarPrompt = crearButtonConClaseYHandler(
+        'Editar (prompt)',
         'gasto-editar',
+        'click',
         new EditarHandle(gasto));
-
+        
     let btnBorrar = crearButtonConClaseYHandler(
         'Borrar',
         'gasto-borrar',
+        'click',
         new BorrarHandle(gasto));
+
+    let btnEditarForm = crearButtonConClaseYHandler(
+        'Editar (form)',
+        'gasto-editar-formulario',
+        'click',
+        new EditarHandleForm(gasto));
 
     divGasto.append(
         descripcionGasto,
         fechaGasto,
         valorGasto,
         etiquetasGasto,
-        btnEditar,
-        btnBorrar
+        btnEditarPrompt,
+        btnBorrar,
+        btnEditarForm,
     );
 
     anyadirElementoEnId(idElemento, divGasto);
@@ -175,7 +190,7 @@ let repintar = () => {
 // ============================================================
 // 5. MANEJADORES DE EVENTOS
 // ============================================================
-//Objeto manejador de eventos EditarHandle
+//Objeto manejador de eventos - introducir gastos con PORMPT
 function EditarHandle(gasto) {
     this.gasto = gasto;
 }
@@ -212,7 +227,47 @@ EditarHandle.prototype.handleEvent = function(event) {
     repintar();
 };
 
-//Objeto manejador de eventos BorrarHandle
+//Objeto manejador de eventos -Introducir gastos con FORM
+let EditarHandleForm = function(gasto) {
+    this.gasto = gasto;
+}
+
+EditarHandleForm.prototype.handleEvent = function(event) {
+    let formularioEditarGasto = crearFormConIdPlantilla('formulario-template');
+    let btnEnviar = formularioEditarGasto.querySelector('.enviar');
+    let btnCancelar = formularioEditarGasto.querySelector('.cancelar');
+    
+    //Para agregar el form al elemento que contiene al botón clicado
+    event.currentTarget.parentElement.append(formularioEditarGasto);
+
+    //Desactiva el botón clicado (Editar (form))
+    event.target.disabled = true;
+
+    //Para pintar los gastos actuales en el form:
+    let inputConId = (idInput) => {
+        return formularioEditarGasto.querySelector('#' + idInput);
+    }
+    
+    inputConId('descripcion').value = this.gasto.descripcion;
+    inputConId('valor').value = this.gasto.valor;
+    inputConId('fecha').value = this.gasto.obtenerFechaISO().slice(0, 10);
+    inputConId('etiquetas').value = this.gasto.etiquetas.join(',');
+
+    //Para actualizar los datos editados en el gasto
+    btnEnviar.addEventListener('submit', (event) => {
+        this.gasto.actualizarDescripcion(inputConId('descripcion').value);
+        this.gasto.actualizarValor(inputConId('valor').value);
+        this.gasto.actualizarFecha(inputConId('fecha').value);
+        this.gasto.anyadirEtiquetas(
+            ...transformarEtiquetasEnArray(inputConId('etiquetas').value));
+
+        repintar();
+    });
+
+    addEventListenerBotonCancelarForm(formularioEditarGasto, btnCancelar, event.target);
+}
+
+//Objeto manejador de eventos -BORRAR eventos
 function BorrarHandle(gasto) {
     this.gasto = gasto;
 }
@@ -223,7 +278,7 @@ BorrarHandle.prototype.handleEvent  = function(event) {
     repintar();
 }
 
-//Objeto manejador de eventos BorrarEtiquetasHandle
+//Objeto manejador de eventos -BORRAR etiquetas
 function BorrarEtiquetasHandle(gasto, etiqueta) {
     this.gasto = gasto;
     this.etiqueta = etiqueta;
@@ -239,6 +294,8 @@ BorrarEtiquetasHandle.prototype.handleEvent = function(event) {
 // ============================================================
 // 6. FUNCIONES PARA LAS ACCIONES DEL USUARIO
 // ============================================================
+let controlesPrincipales = document.getElementById('controlesprincipales');
+
 //Evento para actualizar presupuesto con prompt
 let btnActualizarPresupuesto = document.getElementById('actualizarpresupuesto');
 
@@ -272,7 +329,71 @@ function nuevoGastoWeb() {
     repintar();
 }
 
-//Función auxiliar
+//Evento para añadir gasto con form
+let btnAnyadirGastoForm = document.getElementById('anyadirgasto-formulario');
+
+btnAnyadirGastoForm.addEventListener('click', () => {
+    if (btnAnyadirGastoForm.disabled === false) {
+        nuevoGastoWebFormulario();
+        btnAnyadirGastoForm.disabled = true;
+    } 
+});
+
+function nuevoGastoWebFormulario() {
+    let formGasto = crearFormConIdPlantilla('formulario-template');
+
+    //Botón Enviar del formulario
+    let btnEnviar = formGasto.querySelector('.enviar');
+    let btnCancelar = formGasto.querySelector('.cancelar');
+
+    btnEnviar.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (gestionarDatosFormAnyadirGasto()) {
+            formGasto.remove();
+            btnAnyadirGastoForm.disabled = false;
+        } else {
+            alert('Introduzca una descripción o un valor');
+        }
+    });
+    
+    function gestionarDatosFormAnyadirGasto() {
+        if (cogerValorInput('descripcion') === '' &&
+            cogerValorInput('valor') === '') {
+                return false;
+            }
+    
+        let nuevoGasto = new gestionPresupuesto.CrearGasto (
+            cogerValorInput('descripcion'),
+            cogerValorInput('valor'),
+            cogerValorInput('fecha'),
+            ...transformarEtiquetasEnArray(cogerValorInput('etiquetas')),
+        );
+
+        gestionPresupuesto.anyadirGasto(nuevoGasto);
+
+        repintar();
+    
+        return true;
+    }
+
+    addEventListenerBotonCancelarForm(formGasto, btnCancelar, btnAnyadirGastoForm);
+
+    controlesPrincipales.append(formGasto);
+}
+
+//Funciones auxiliares
+function cogerValorInput(idInput) {
+    return document.getElementById(idInput).value;
+}
+
+//Recibe el form, el botón que se clica y el botón Editar que debe reactivarse
+function addEventListenerBotonCancelarForm(formulario, btnCancelar, btnAnyadirForm) {
+    btnCancelar.addEventListener('click', () => {
+        formulario.remove();
+        btnAnyadirForm.disabled = false;
+    });
+}
+
 function transformarEtiquetasEnArray(etiquetasString) {
     //Si el usuario pulsa Cancelar
     if (etiquetasString === null) {
