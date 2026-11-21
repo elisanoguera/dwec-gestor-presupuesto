@@ -24,7 +24,7 @@ describe("Formularios", () => {
         cy.get("#controlesprincipales form #valor").invoke("val", "45");
 
 
-        // Enviar el formulario
+        // Enviar el formulario CON EVENTO 'SUBMIT' ********
         cy.get("#controlesprincipales form").submit();
 
         // Se deben actualizar los gastos totales
@@ -61,7 +61,7 @@ describe("Formularios", () => {
         // Debe desactivarse el botón "anyadirgasto-formulario"
         cy.get("#anyadirgasto-formulario").should("have.attr", "disabled");
 
-        // Pulsamos en el botón Cancelar del formulario
+        // Pulsamos en el botón Cancelar del formulario CON EVENTO 'CLICK' ****
         cy.get("#controlesprincipales button.cancelar").click();
 
         // No debe haber nuevos gastos
@@ -81,7 +81,7 @@ describe("Formularios", () => {
         // Al principio no debe existir el formulario de edición
         cy.get("#listado-gastos-completo .gasto form").should("have.length", 0);
 
-        // Hacer click en editar el sexto gasto
+        // Hacer click en editar el sexto gasto CON EVENTO 'CLICK' ****
         cy.get("#listado-gastos-completo .gasto button.gasto-editar-formulario").eq(5).click();
 
         // Debe apareer el formulario
@@ -94,7 +94,7 @@ describe("Formularios", () => {
         cy.get("#listado-gastos-completo .gasto form #descripcion").invoke("val", "test");
         cy.get("#listado-gastos-completo .gasto form #valor").invoke("val", "95.78");
 
-        // Enviar el formulario
+        // Enviar el formulario con EVENTO 'SUBMIT' *****
         cy.get("#listado-gastos-completo .gasto form").submit();
 
         // Se debe haber activado de nuevo el botón de editar del gasto

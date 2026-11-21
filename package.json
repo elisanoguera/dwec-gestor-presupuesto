@@ -26,5 +26,8 @@
         "ci": "^2.1.1",
         "debug": "^4.3.2",
         "eslint-plugin-cypress": "^2.12.1"
+    },
+    "allowScripts": {
+        "cypress@16.1.1": true
     }
 }
