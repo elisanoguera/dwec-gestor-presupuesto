@@ -254,7 +254,9 @@ EditarHandleForm.prototype.handleEvent = function(event) {
     inputConId('etiquetas').value = this.gasto.etiquetas.join(',');
 
     //Para actualizar los datos editados en el gasto
-    btnEnviar.addEventListener('submit', (event) => {
+    formularioEditarGasto.addEventListener('submit', (event) => {
+        event.preventDefault();
+
         this.gasto.actualizarDescripcion(inputConId('descripcion').value);
         this.gasto.actualizarValor(inputConId('valor').value);
         this.gasto.actualizarFecha(inputConId('fecha').value);
@@ -346,8 +348,9 @@ function nuevoGastoWebFormulario() {
     let btnEnviar = formGasto.querySelector('.enviar');
     let btnCancelar = formGasto.querySelector('.cancelar');
 
-    btnEnviar.addEventListener('submit', (event) => {
+    formGasto.addEventListener('submit', (event) => {
         event.preventDefault();
+
         if (gestionarDatosFormAnyadirGasto()) {
             formGasto.remove();
             btnAnyadirGastoForm.disabled = false;

@@ -40,7 +40,7 @@ CrearGasto.prototype.actualizarDescripcion = function(descripcion) {
 
 CrearGasto.prototype.actualizarValor = function(valor) {
     if (esNumeroNoNegativo(valor)) {
-        return this.valor = valor;
+        return this.valor = Number(valor);
     }
 };
 
